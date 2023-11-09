@@ -74,11 +74,19 @@ export interface ViewingArea extends Interactable {
 }
 
 export type GameStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'OVER';
+export type UtilityStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'OVER';
 /**
  * Base type for the state of a game
  */
 export interface GameState {
   status: GameStatus;
+} 
+
+/**
+ * Base type for the state of a game
+ */
+export interface UtilityState {
+  status: UtilityStatus;
 } 
 
 /**
@@ -117,6 +125,15 @@ export interface TicTacToeGameState extends WinnableGameState {
   moves: ReadonlyArray<TicTacToeMove>;
   x?: PlayerID;
   o?: PlayerID;
+}
+
+export interface Pixel {
+  color: number;
+}
+
+export interface SketchBoardState extends UtilityState {
+  illustrators: PlayerID[];
+  canvas: Pixel[][]
 }
 
 export type InteractableID = string;
