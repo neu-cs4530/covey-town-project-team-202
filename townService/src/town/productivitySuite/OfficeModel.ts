@@ -1,6 +1,11 @@
 import { nanoid } from 'nanoid';
 import Player from '../../lib/Player';
-import { OfficeInstance, OfficeInstanceID, OfficeState } from '../../types/CoveyTownSocket';
+import {
+  OfficeInstance,
+  OfficeInstanceID,
+  OfficeState,
+  PrivacyType,
+} from '../../types/CoveyTownSocket';
 
 /**
  * This class is the base class for all games. It is responsible for managing the
@@ -8,6 +13,8 @@ import { OfficeInstance, OfficeInstanceID, OfficeState } from '../../types/Covey
  */
 export default abstract class Office<StateType extends OfficeState> {
   private _state: StateType;
+
+  protected _privacy: PrivacyType;
 
   public readonly id: OfficeInstanceID;
 
@@ -21,6 +28,7 @@ export default abstract class Office<StateType extends OfficeState> {
   public constructor(initialState: StateType) {
     this.id = nanoid() as OfficeInstanceID;
     this._state = initialState;
+    this._privacy = 'PRIVATE';
   }
 
   public get state() {
@@ -74,4 +82,8 @@ export default abstract class Office<StateType extends OfficeState> {
       players: this._players.map(player => player.id),
     };
   }
+
+  public abstract get privacy(): PrivacyType;
+
+  public abstract set privacy(newPrivacy: PrivacyType);
 }
