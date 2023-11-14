@@ -74,12 +74,18 @@ export interface ViewingArea extends Interactable {
 }
 
 export type GameStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'OVER';
+export type PrivacyType = 'PUBLIC' | 'PRIVATE';
 /**
  * Base type for the state of a game
  */
 export interface GameState {
   status: GameStatus;
 } 
+
+export interface OfficeState {
+  privacy: PrivacyType;
+  leader: PlayerID;
+}
 
 /**
  * Type for the state of a game that can be won
@@ -121,6 +127,7 @@ export interface TicTacToeGameState extends WinnableGameState {
 
 export type InteractableID = string;
 export type GameInstanceID = string;
+export type OfficeInstanceID = string;
 
 /**
  * Type for the result of a game
@@ -141,6 +148,12 @@ export interface GameInstance<T extends GameState> {
   id: GameInstanceID;
   players: PlayerID[];
   result?: GameResult;
+}
+
+export interface OfficeInstance<T extends OfficeState> {
+  state: T;
+  id: OfficeInstanceID;
+  players: PlayerID[];
 }
 
 /**
