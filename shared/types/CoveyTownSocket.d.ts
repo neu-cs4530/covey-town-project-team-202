@@ -84,8 +84,16 @@ export interface GameState {
 
 export interface OfficeState {
   privacy: PrivacyType;
-  leader: PlayerID;
+  occupancyLimit: number;
+  leader: PlayerID | undefined;
 }
+
+export interface SketchBoardState extends OfficeState {
+  board: Color[][];
+  backgroundColor: Color;
+}
+
+export type Color = `#{string`;
 
 /**
  * Type for the state of a game that can be won

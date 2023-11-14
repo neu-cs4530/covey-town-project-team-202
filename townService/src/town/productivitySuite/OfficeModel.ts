@@ -6,6 +6,7 @@ import {
   OfficeState,
   PrivacyType,
 } from '../../types/CoveyTownSocket';
+import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE } from '../../lib/Constants';
 
 /**
  * This class is the base class for all games. It is responsible for managing the
@@ -20,6 +21,8 @@ export default abstract class Office<StateType extends OfficeState> {
 
   protected _players: Player[] = [];
 
+  protected _occupancyLimit: number;
+
   /**
    * Creates a new Game instance.
    * @param initialState State to initialize the game with.
@@ -28,7 +31,8 @@ export default abstract class Office<StateType extends OfficeState> {
   public constructor(initialState: StateType) {
     this.id = nanoid() as OfficeInstanceID;
     this._state = initialState;
-    this._privacy = 'PRIVATE';
+    this._privacy = PRIVATE;
+    this._occupancyLimit = DEFAULT_OCCUPANCY_LIMIT;
   }
 
   public get state() {
