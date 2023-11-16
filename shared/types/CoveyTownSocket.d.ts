@@ -195,7 +195,11 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand | OfficeCommand;
+export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand>
+
+export type SketchBoardUpdateCommand = DrawCommand | ResetCommand
+
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
@@ -211,6 +215,35 @@ export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;
   move: MoveType;
+}
+export interface JoinOfficeCommand {
+  type: 'JoinOffice';
+}
+export interface LeaveOfficeCommand {
+  type: 'LeaveOffice';
+  officeID: OfficeInstanceID;
+}
+export interface PrivacyCommand {
+  type: 'PrivacyCommand';
+  officeID: OfficeInstanceID;
+  privacySetting: PrivacyType;
+}
+export interface OfficeUpdateCommand<OfficeMoveType> {
+  type: 'OfficeMove';
+  officeID: OfficeInstanceID;
+  move: OfficeMoveType;
+}
+export interface DrawCommand {
+  type: 'DrawCommand';
+  stroke: DrawPixel[];
+}
+export interface DrawPixel {
+  x: number;
+  y: number;
+  color: Color;
+}
+export interface ResetCommand {
+  type: 'ResetCommand';
 }
 export type InteractableCommandReturnType<CommandType extends InteractableCommand> = 
   CommandType extends JoinGameCommand ? { gameID: string}:
