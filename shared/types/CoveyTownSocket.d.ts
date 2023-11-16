@@ -74,12 +74,26 @@ export interface ViewingArea extends Interactable {
 }
 
 export type GameStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'OVER';
+export type PrivacyType = 'PUBLIC' | 'PRIVATE';
 /**
  * Base type for the state of a game
  */
 export interface GameState {
   status: GameStatus;
 } 
+
+export interface OfficeState {
+  privacy: PrivacyType;
+  occupancyLimit: number;
+  leader: PlayerID | undefined;
+}
+
+export interface SketchBoardState extends OfficeState {
+  board: Color[][];
+  backgroundColor: Color;
+}
+
+export type Color = `#{string`;
 
 /**
  * Type for the state of a game that can be won
@@ -121,6 +135,7 @@ export interface TicTacToeGameState extends WinnableGameState {
 
 export type InteractableID = string;
 export type GameInstanceID = string;
+export type OfficeInstanceID = string;
 
 /**
  * Type for the result of a game
@@ -141,6 +156,12 @@ export interface GameInstance<T extends GameState> {
   id: GameInstanceID;
   players: PlayerID[];
   result?: GameResult;
+}
+
+export interface OfficeInstance<T extends OfficeState> {
+  state: T;
+  id: OfficeInstanceID;
+  players: PlayerID[];
 }
 
 /**
@@ -174,7 +195,12 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand | OfficeCommand;
+
+export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand>
+
+export type SketchBoardUpdateCommand = DrawCommand | ResetCommand
+
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
@@ -190,6 +216,35 @@ export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;
   move: MoveType;
+}
+export interface JoinOfficeCommand {
+  type: 'JoinOffice';
+}
+export interface LeaveOfficeCommand {
+  type: 'LeaveOffice';
+  officeID: OfficeInstanceID;
+}
+export interface PrivacyCommand {
+  type: 'PrivacyCommand';
+  officeID: OfficeInstanceID;
+  privacySetting: PrivacyType;
+}
+export interface OfficeUpdateCommand<OfficeUpdateType> {
+  type: 'OfficeUpdate';
+  officeID: OfficeInstanceID;
+  move: OfficeUpdateType;
+}
+export interface DrawCommand {
+  type: 'DrawCommand';
+  stroke: DrawPixel[];
+}
+export interface DrawPixel {
+  x: number;
+  y: number;
+  color: Color;
+}
+export interface ResetCommand {
+  type: 'ResetCommand';
 }
 export type InteractableCommandReturnType<CommandType extends InteractableCommand> = 
   CommandType extends JoinGameCommand ? { gameID: string}:
