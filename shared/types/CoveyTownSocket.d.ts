@@ -111,6 +111,12 @@ export interface GameMove<MoveType> {
   move: MoveType;
 }
 
+export interface OfficeUpdate<UpdateType> {
+  playerID: PlayerID;
+  officeID: OfficeInstanceID;
+  update: UpdateType;
+}
+
 export type TicTacToeGridPosition = 0 | 1 | 2;
 
 /**
