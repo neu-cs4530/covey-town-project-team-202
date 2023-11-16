@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'SketchBoardArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -93,7 +93,7 @@ export interface SketchBoardState extends OfficeState {
   backgroundColor: Color;
 }
 
-export type Color = `#{string`;
+export type Color = `#${string}`;
 
 /**
  * Type for the state of a game that can be won

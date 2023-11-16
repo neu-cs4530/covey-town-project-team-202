@@ -10,8 +10,8 @@ import {
 import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE } from '../../lib/Constants';
 
 /**
- * This class is the base class for all games. It is responsible for managing the
- * state of the game. @see GameArea
+ * This class is the base class for all offices. It is responsible for managing the
+ * state of the game. @see OfficeArea
  */
 export default abstract class Office<StateType extends OfficeState, UpdateType> {
   private _state: StateType;
