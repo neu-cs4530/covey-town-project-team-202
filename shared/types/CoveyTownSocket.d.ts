@@ -166,6 +166,13 @@ export interface OfficeInstance<T extends OfficeState> {
 
 /**
  * Base type for an area that can host a game
+ * @see OfficeInstance
+ */
+export interface OfficeArea<T extends OfficeState> extends Interactable {
+  office: OfficeInstance<T> | undefined;
+}
+/**
+ * Base type for an area that can host a game
  * @see GameInstance
  */
 export interface GameArea<T extends GameState> extends Interactable {
