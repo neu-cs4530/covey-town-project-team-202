@@ -1,9 +1,18 @@
 import { PRIVATE } from '../../lib/Constants';
 import Player from '../../lib/Player';
-import { PrivacyType, SketchBoardState } from '../../types/CoveyTownSocket';
+import {
+  OfficeUpdate,
+  PrivacyType,
+  SketchBoardState,
+  SketchBoardUpdateCommand,
+} from '../../types/CoveyTownSocket';
 import Office from './OfficeModel';
 
-export default class SketchBoardModel extends Office<SketchBoardState> {
+export default class SketchBoardModel extends Office<SketchBoardState, SketchBoardUpdateCommand> {
+  public applyUpdate(update: OfficeUpdate<SketchBoardUpdateCommand>): void {
+    throw new Error('Method not implemented.');
+  }
+
   protected _join(player: Player): void {
     if (this._players.length === this._occupancyLimit) {
       throw new Error('Method not implemented.');
