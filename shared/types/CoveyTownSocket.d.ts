@@ -196,6 +196,7 @@ interface InteractableCommandBase {
 }
 
 export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand | OfficeCommand;
+
 export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand>
 
 export type SketchBoardUpdateCommand = DrawCommand | ResetCommand
@@ -228,10 +229,10 @@ export interface PrivacyCommand {
   officeID: OfficeInstanceID;
   privacySetting: PrivacyType;
 }
-export interface OfficeUpdateCommand<OfficeMoveType> {
-  type: 'OfficeMove';
+export interface OfficeUpdateCommand<OfficeUpdateType> {
+  type: 'OfficeUpdate';
   officeID: OfficeInstanceID;
-  move: OfficeMoveType;
+  move: OfficeUpdateType;
 }
 export interface DrawCommand {
   type: 'DrawCommand';
