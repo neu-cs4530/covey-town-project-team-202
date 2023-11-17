@@ -1,6 +1,8 @@
 import { PRIVATE } from '../../lib/Constants';
 import Player from '../../lib/Player';
 import {
+  DrawCommand,
+  DrawPixel,
   OfficeUpdate,
   PrivacyType,
   SketchBoardState,
@@ -10,8 +12,23 @@ import Office from './OfficeModel';
 
 export default class SketchBoardModel extends Office<SketchBoardState, SketchBoardUpdateCommand> {
   public applyUpdate(update: OfficeUpdate<SketchBoardUpdateCommand>): void {
-    throw new Error('Method not implemented.');
+    const updateType = update.update.type;
+    switch (updateType) {
+      case 'DrawCommand':
+        // eslint-disable-next-line no-case-declarations
+        const drawCommand = update.update as DrawCommand;
+        this._drawPixel(drawCommand.stroke);
+        break;
+      case 'ResetCommand':
+        this._resetBoard();
+        break;
+      default:
+    }
   }
+
+  private _resetBoard(): void {}
+
+  private _drawPixel(stroke: DrawPixel[]): void {}
 
   protected _join(player: Player): void {
     if (this._players.length === this._occupancyLimit) {
