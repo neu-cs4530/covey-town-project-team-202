@@ -69,5 +69,26 @@ describe('SketchBoardModel', () => {
       office.applyUpdate(updateToSend);
       expect(office.state.board[0][0]).toBe(`#${111111}`);
     });
+    test('draw a list of pixels together', () => {
+      const pixelsToDraw: DrawPixel[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(c => ({
+        x: c,
+        y: c,
+        color: `#${111111}`,
+      }));
+      const drawCommand: DrawCommand = {
+        type: 'DrawCommand',
+        stroke: pixelsToDraw,
+      };
+      const updateToSend: OfficeUpdate<SketchBoardUpdateCommand> = {
+        playerID: player1.id,
+        officeID: office.id,
+        update: drawCommand,
+      };
+      expect(office.state.board[0][0]).toBe(`#${'ffffff'}`);
+      office.applyUpdate(updateToSend);
+      [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(c =>
+        expect(office.state.board[c][c]).toBe(`#${111111}`),
+      );
+    });
   });
 });
