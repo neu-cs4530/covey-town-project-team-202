@@ -16,13 +16,9 @@ import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE } from '../../lib/Constants';
 export default abstract class Office<StateType extends OfficeState, UpdateType> {
   private _state: StateType;
 
-  protected _privacy: PrivacyType;
-
   public readonly id: OfficeInstanceID;
 
   protected _players: Player[] = [];
-
-  protected _occupancyLimit: number;
 
   /**
    * Creates a new Game instance.
@@ -32,8 +28,6 @@ export default abstract class Office<StateType extends OfficeState, UpdateType> 
   public constructor(initialState: StateType) {
     this.id = nanoid() as OfficeInstanceID;
     this._state = initialState;
-    this._privacy = PRIVATE;
-    this._occupancyLimit = DEFAULT_OCCUPANCY_LIMIT;
   }
 
   public get state() {
@@ -88,9 +82,21 @@ export default abstract class Office<StateType extends OfficeState, UpdateType> 
     };
   }
 
-  public abstract get privacy(): PrivacyType;
+  public get privacy(): PrivacyType {
+    return this._state.privacy;
+  }
 
-  public abstract set privacy(newPrivacy: PrivacyType);
+  public set privacy(newPrivacy: PrivacyType) {
+    this._state.privacy = newPrivacy;
+  }
+
+  public set occupancyLimit(limit: number) {
+    this._state.occupancyLimit = limit;
+  }
+
+  public get occupancyLimit() {
+    return this._state.occupancyLimit;
+  }
 
   public abstract applyUpdate(update: OfficeUpdate<UpdateType>): void;
 }
