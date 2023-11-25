@@ -21,6 +21,7 @@ import {
   InteractableCommandBase,
   InteractableCommandResponse,
   InteractableID,
+  OfficeState,
   PlayerID,
   PlayerLocation,
   TownSettingsUpdate,
@@ -35,6 +36,8 @@ import InteractableAreaController, {
 import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
+import OfficeArea from '../components/Town/interactables/OfficeArea';
+import OfficeAreaController, { OfficeEventTypes } from './interactable/OfficeAreaController';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY_MS = 300;
 const SOCKET_COMMAND_TIMEOUT_MS = 5000;
@@ -663,6 +666,27 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     );
     if (existingController instanceof GameAreaController) {
       return existingController as GameAreaController<GameType, EventsType>;
+    } else {
+      throw new Error('Game area controller not created');
+    }
+  }
+
+  /**
+   * Retrives the game area controller corresponding to a game area by ID, or
+   * throws an error if the game area controller does not exist
+   *
+   * @param gameArea
+   * @returns
+   */
+  public getOfficeAreaController<
+    OfficeType extends OfficeState,
+    EventsType extends OfficeEventTypes,
+  >(officeArea: OfficeArea): OfficeAreaController<OfficeType, EventsType> {
+    const existingController = this._interactableControllers.find(
+      eachExistingArea => eachExistingArea.id === officeArea.name,
+    );
+    if (existingController instanceof OfficeAreaController) {
+      return existingController as OfficeAreaController<OfficeType, EventsType>;
     } else {
       throw new Error('Game area controller not created');
     }

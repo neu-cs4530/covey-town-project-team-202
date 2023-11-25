@@ -1,6 +1,6 @@
 import Interactable, { KnownInteractableTypes } from '../Interactable';
 
-export default class OfficeArea extends Interactable {
+export default class OfficeAreaInteractable extends Interactable {
   private _isInteracting = false;
 
   addedToScene() {

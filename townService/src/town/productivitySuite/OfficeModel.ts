@@ -4,7 +4,6 @@ import {
   OfficeInstance,
   OfficeInstanceID,
   OfficeState,
-  OfficeUpdate,
   PrivacyType,
 } from '../../types/CoveyTownSocket';
 /**
