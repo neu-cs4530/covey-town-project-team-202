@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'SketchBoardArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -93,7 +93,7 @@ export interface SketchBoardState extends OfficeState {
   backgroundColor: Color;
 }
 
-export type Color = `#{string`;
+export type Color = `#${string}`;
 
 /**
  * Type for the state of a game that can be won
@@ -109,6 +109,12 @@ export interface GameMove<MoveType> {
   playerID: PlayerID;
   gameID: GameInstanceID;
   move: MoveType;
+}
+
+export interface OfficeUpdate<UpdateType> {
+  playerID: PlayerID;
+  officeID: OfficeInstanceID;
+  update: UpdateType;
 }
 
 export type TicTacToeGridPosition = 0 | 1 | 2;
@@ -166,6 +172,13 @@ export interface OfficeInstance<T extends OfficeState> {
 
 /**
  * Base type for an area that can host a game
+ * @see OfficeInstance
+ */
+export interface OfficeArea<T extends OfficeState> extends Interactable {
+  office: OfficeInstance<T> | undefined;
+}
+/**
+ * Base type for an area that can host a game
  * @see GameInstance
  */
 export interface GameArea<T extends GameState> extends Interactable {
@@ -197,7 +210,7 @@ interface InteractableCommandBase {
 
 export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand | OfficeCommand;
 
-export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand>
+export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand> | OccupancyLimitCommand;
 
 export type SketchBoardUpdateCommand = DrawCommand | ResetCommand
 
@@ -211,6 +224,11 @@ export interface JoinGameCommand {
 export interface LeaveGameCommand {
   type: 'LeaveGame';
   gameID: GameInstanceID;
+}
+export interface OccupancyLimitCommand {
+  type: 'OccupancyLimit';
+  officeID: OfficeInstanceID;
+  limit: number;
 }
 export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
@@ -232,7 +250,7 @@ export interface PrivacyCommand {
 export interface OfficeUpdateCommand<OfficeUpdateType> {
   type: 'OfficeUpdate';
   officeID: OfficeInstanceID;
-  move: OfficeUpdateType;
+  update: OfficeUpdateType;
 }
 export interface DrawCommand {
   type: 'DrawCommand';

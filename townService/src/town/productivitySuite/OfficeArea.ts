@@ -1,10 +1,14 @@
 import Player from '../../lib/Player';
-import { OfficeState, InteractableType } from '../../types/CoveyTownSocket';
+import {
+  OfficeState,
+  InteractableType,
+  OfficeArea as OfficeAreaModel,
+} from '../../types/CoveyTownSocket';
 import InteractableArea from '../InteractableArea';
 import OfficeModel from './OfficeModel';
 
 export default abstract class OfficeArea<
-  OfficeType extends OfficeModel<OfficeState>,
+  OfficeType extends OfficeModel<OfficeState, unknown>,
 > extends InteractableArea {
   protected _office?: OfficeType;
 
