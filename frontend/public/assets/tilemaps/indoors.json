@@ -558,8 +558,25 @@
                  "width":135.170262542241,
                  "x":2941.25292435664,
                  "y":738.416428385755
-                }, 
-                {
+                },
+           {
+             "height":92.2796984663374,
+             "id":55,
+             "name":"Sketch Board 1",
+             "properties":[
+               {
+                 "name":"type",
+                 "type":"string",
+                 "value":"SketchBoard"
+               }],
+             "rotation":0,
+             "type":"OfficeArea",
+             "visible":true,
+             "width":135.170262542241,
+             "x":3125.92,
+             "y":788.09
+           },
+           {
                  "height":83.8442547785938,
                  "id":43,
                  "name":"Tic Tac Toe 1",
@@ -33856,3 +33873,4 @@
  "version":"1.10",
  "width":120
 }
+
