@@ -21,7 +21,7 @@ export type OfficeEventTypes = BaseInteractableEventMap & {
  * state of the office, and for sending commands to the server to update the state of the office.
  * It is also responsible for notifying the UI when the state of the office changes, by emitting events.
  */
-export default abstract class GameAreaController<
+export default abstract class OfficeAreaController<
   State extends OfficeState,
   EventTypes extends OfficeEventTypes,
 > extends InteractableAreaController<EventTypes, OfficeArea<State>> {
@@ -78,6 +78,31 @@ export default abstract class GameAreaController<
 
   protected _updateFrom(newModel: OfficeArea<State>): void {
     // TODO
+    const newPlayers =
+      newModel.office?.players.map(playerID => this._townController.getPlayer(playerID)) ?? [];
+    if (!newPlayers && this._players.length > 0) {
+      this._players = [];
+      //TODO - Bounty for figuring out how to make the types work here
+      //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.emit('playersChange', []);
+    }
+    if (
+      this._players.length != newModel.office?.players.length ||
+      _.xor(newPlayers, this._players).length > 0
+    ) {
+      this._players = newPlayers;
+      //TODO - Bounty for figuring out how to make the types work here
+      //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      this.emit('playersChange', newPlayers);
+    }
+    this._model = newModel;
+    //TODO - Bounty for figuring out how to make the types work here
+    //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    this.emit('gameUpdated');
+    this._instanceID = newModel.office?.id ?? this._instanceID;
   }
 
   toInteractableAreaModel(): OfficeArea<State> {

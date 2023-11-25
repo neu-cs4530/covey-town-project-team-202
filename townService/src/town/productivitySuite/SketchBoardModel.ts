@@ -1,12 +1,9 @@
-import { length } from 'ramda';
 import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE } from '../../lib/Constants';
 import Player from '../../lib/Player';
 import {
   Color,
   DrawCommand,
   DrawPixel,
-  OfficeUpdate,
-  PrivacyType,
   SketchBoardState,
   SketchBoardUpdateCommand,
 } from '../../types/CoveyTownSocket';
@@ -46,8 +43,8 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
   }
 
   private _resetBoard(): void {
-    for (let i = 0; i < length(this.state.board); i++) {
-      for (let j = 0; j < length(this.state.board[0]); j++) {
+    for (let i = 0; i < this.state.board.length; i++) {
+      for (let j = 0; j < this.state.board[0].length; j++) {
         this.state.board[i][j] = this.state.backgroundColor;
       }
     }
@@ -61,7 +58,6 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
   }
 
   protected _join(player: Player): void {
-    console.log(this._players);
     if (this._players.length === this.occupancyLimit) {
       throw new Error('Method not implemented.');
     }
