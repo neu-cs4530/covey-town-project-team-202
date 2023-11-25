@@ -54,22 +54,6 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
     command: CommandType,
     player: Player,
   ): InteractableCommandReturnType<CommandType> {
-    if (command.type === 'OfficeUpdate') {
-      const office = this._office;
-      if (!office) {
-        throw new InvalidParametersError('No office instance');
-      }
-      if (this._office?.id !== command.officeID) {
-        throw new InvalidParametersError('Invalid office id');
-      }
-      office.applyUpdate({
-        officeID: command.officeID,
-        playerID: player.id,
-        update: command.move,
-      });
-      this._stateUpdated(office.toModel());
-      return undefined as InteractableCommandReturnType<CommandType>;
-    }
     if (command.type === 'JoinOffice') {
       let office = this._office;
       if (!office) {
@@ -92,6 +76,42 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
       office.leave(player);
       this._stateUpdated(office.toModel());
       return undefined as InteractableCommandReturnType<CommandType>;
+    }
+    if (command.type === 'PrivacyCommand') {
+      const office = this._office;
+      if (!office) {
+        throw new InvalidParametersError('No office to leave');
+      }
+      if (this._office?.id !== command.officeID) {
+        throw new InvalidParametersError('invalid office ID');
+      }
+      if (player.id !== this.office?.state.leader) {
+        throw new InvalidParametersError('only the leader can set privacy');
+      }
+      office.privacy = command.privacySetting;
+    }
+    if (command.type === 'OfficeUpdate') {
+      const office = this._office;
+      if (!office) {
+        throw new InvalidParametersError('No office to leave');
+      }
+      if (this._office?.id !== command.officeID) {
+        throw new InvalidParametersError('invalid office ID');
+      }
+      this.office?.applyUpdate(command.update);
+    }
+    if (command.type === 'OccupancyLimit') {
+      const office = this._office;
+      if (!office) {
+        throw new InvalidParametersError('No office to leave');
+      }
+      if (this._office?.id !== command.officeID) {
+        throw new InvalidParametersError('invalid office ID');
+      }
+      if (player.id !== this.office?.state.leader) {
+        throw new InvalidParametersError('only the leader can set privacy');
+      }
+      office.occupancyLimit = command.limit;
     }
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
   }

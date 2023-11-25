@@ -1,3 +1,4 @@
+import { length } from 'ramda';
 import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE } from '../../lib/Constants';
 import Player from '../../lib/Player';
 import {
@@ -30,12 +31,11 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     });
   }
 
-  public applyUpdate(update: OfficeUpdate<SketchBoardUpdateCommand>): void {
-    const updateType = update.update.type;
-    switch (updateType) {
+  public applyUpdate(update: SketchBoardUpdateCommand): void {
+    switch (update.type) {
       case 'DrawCommand':
         // eslint-disable-next-line no-case-declarations
-        const drawCommand = update.update as DrawCommand;
+        const drawCommand = update as DrawCommand;
         this._drawPixel(drawCommand.stroke);
         break;
       case 'ResetCommand':
@@ -45,7 +45,13 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     }
   }
 
-  private _resetBoard(): void {}
+  private _resetBoard(): void {
+    for (let i = 0; i < length(this.state.board); i++) {
+      for (let j = 0; j < length(this.state.board[0]); j++) {
+        this.state.board[i][j] = this.state.backgroundColor;
+      }
+    }
+  }
 
   private _drawPixel(stroke: DrawPixel[]): void {
     stroke.forEach((pixelToDraw: DrawPixel) => {
@@ -56,7 +62,7 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
 
   protected _join(player: Player): void {
     console.log(this._players);
-    if (this._players.length === this._occupancyLimit) {
+    if (this._players.length === this.occupancyLimit) {
       throw new Error('Method not implemented.');
     }
 
@@ -84,13 +90,5 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
       const otherPlayers = this._players.filter(p => p.id !== player.id);
       this.state.leader = otherPlayers[0].id;
     }
-  }
-
-  public get privacy(): PrivacyType {
-    return this.state.privacy;
-  }
-
-  public set privacy(newPrivacy: PrivacyType) {
-    this.privacy = newPrivacy;
   }
 }

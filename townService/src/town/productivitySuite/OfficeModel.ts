@@ -7,8 +7,6 @@ import {
   OfficeUpdate,
   PrivacyType,
 } from '../../types/CoveyTownSocket';
-import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE } from '../../lib/Constants';
-
 /**
  * This class is the base class for all offices. It is responsible for managing the
  * state of the game. @see OfficeArea
@@ -98,5 +96,5 @@ export default abstract class Office<StateType extends OfficeState, UpdateType> 
     return this._state.occupancyLimit;
   }
 
-  public abstract applyUpdate(update: OfficeUpdate<UpdateType>): void;
+  public abstract applyUpdate(update: UpdateType): void;
 }

@@ -210,7 +210,7 @@ interface InteractableCommandBase {
 
 export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand | OfficeCommand;
 
-export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand>
+export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand> | OccupancyLimitCommand;
 
 export type SketchBoardUpdateCommand = DrawCommand | ResetCommand
 
@@ -224,6 +224,11 @@ export interface JoinGameCommand {
 export interface LeaveGameCommand {
   type: 'LeaveGame';
   gameID: GameInstanceID;
+}
+export interface OccupancyLimitCommand {
+  type: 'OccupancyLimit';
+  officeID: OfficeInstanceID;
+  limit: number;
 }
 export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
@@ -245,7 +250,7 @@ export interface PrivacyCommand {
 export interface OfficeUpdateCommand<OfficeUpdateType> {
   type: 'OfficeUpdate';
   officeID: OfficeInstanceID;
-  move: OfficeUpdateType;
+  update: OfficeUpdateType;
 }
 export interface DrawCommand {
   type: 'DrawCommand';
