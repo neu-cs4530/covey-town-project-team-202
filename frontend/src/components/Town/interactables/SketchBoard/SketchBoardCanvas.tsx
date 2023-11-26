@@ -1,7 +1,8 @@
 import { Button, chakra, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
+import { SKETCHBOARD_PIXEL, SKETCHBOARD_WIDTH, SKETCHBOARD_HEIGHT } from '../../../../../../townService/src/lib/Constants';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
-import { Color, TicTacToeGridPosition } from '../../../../types/CoveyTownSocket';
+import { Color } from '../../../../types/CoveyTownSocket';
 
 export type OfficeAreaProps = {
   officeAreaController: SketchBoardAreaController;
@@ -12,8 +13,8 @@ export type OfficeAreaProps = {
  */
 const StyledSketchBoardSquare = chakra(Button, {
   baseStyle: {
-    height: '1px',
-    width: '1px',
+    flexBasis: `${1/SKETCHBOARD_HEIGHT}%`,
+    fontSize: `${SKETCHBOARD_PIXEL}px`,
   },
 });
 /**
@@ -22,8 +23,7 @@ const StyledSketchBoardSquare = chakra(Button, {
 const StyledSketchBoard = chakra(Container, {
   baseStyle: {
     display: 'flex',
-    width: '1000px',
-    height: '1000px',
+    width: `${SKETCHBOARD_WIDTH}px`,
     padding: '5px',
     flexWrap: 'wrap',
   },
@@ -49,6 +49,7 @@ const StyledSketchBoard = chakra(Container, {
  */
 export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaProps): JSX.Element {
   const [board, setBoard] = useState<Color[][]>(officeAreaController.board);
+  console.log(board);
   const toast = useToast();
   useEffect(() => {
     officeAreaController.addListener('boardChanged', setBoard);

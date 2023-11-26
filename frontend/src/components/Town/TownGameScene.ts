@@ -308,6 +308,8 @@ export default class TownGameScene extends Phaser.Scene {
   getInteractables(): Interactable[] {
     const typedObjects = this.map.filterObjects('Objects', obj => obj.type !== '');
     assert(typedObjects);
+    console.log('typedObjects')
+    console.log(typedObjects);
     const gameObjects = this.map.createFromObjects(
       'Objects',
       typedObjects.map(obj => ({
@@ -315,6 +317,8 @@ export default class TownGameScene extends Phaser.Scene {
         classType: interactableTypeForObjectType(obj.type),
       })),
     );
+    console.log('gameObjects')
+    console.log(gameObjects);
 
     return gameObjects as Interactable[];
   }

@@ -607,6 +607,8 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
         );
 
         this._interactableControllers = [];
+        console.log(initialData.interactables);
+
         initialData.interactables.forEach(eachInteractable => {
           if (isConversationArea(eachInteractable)) {
             this._interactableControllers.push(
@@ -622,6 +624,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
               new TicTacToeAreaController(eachInteractable.id, eachInteractable, this),
             );
           } else if (isSketchBoardArea(eachInteractable)) {
+            console.log('isSketchBoard');
             this._interactableControllers.push(
               new SketchBoardAreaController(eachInteractable.id, eachInteractable, this),
             );
@@ -802,6 +805,7 @@ export function useOfficeAreaController<T>(interactableAreaID: string): T {
   const interactableAreaController = townController.officeAreas.find(
     eachArea => eachArea.id == interactableAreaID,
   );
+  console.log(townController.officeAreas)
   if (!interactableAreaController) {
     throw new Error(`Requested interactable area ${interactableAreaID} does not exist`);
   }

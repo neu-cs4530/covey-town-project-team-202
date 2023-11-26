@@ -1,4 +1,4 @@
-import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE } from '../../lib/Constants';
+import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE, SKETCHBOARD_HEIGHT, SKETCHBOARD_WIDTH } from '../../lib/Constants';
 import Player from '../../lib/Player';
 import {
   Color,
@@ -12,9 +12,9 @@ import Office from './OfficeModel';
 export default class SketchBoardModel extends Office<SketchBoardState, SketchBoardUpdateCommand> {
   public constructor() {
     const board: Color[][] = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < SKETCHBOARD_HEIGHT; i++) {
       const row: Color[] = [];
-      for (let j = 0; j < 10; j++) {
+      for (let j = 0; j < SKETCHBOARD_WIDTH; j++) {
         row.push(`#${'ffffff'}`);
       }
       board.push(row);

@@ -31,5 +31,6 @@ export function isTicTacToeArea(
 export function isSketchBoardArea(
   interactable: Interactable,
 ): interactable is OfficeArea<SketchBoardState> {
+  console.log(interactable.type);
   return interactable.type === 'SketchBoardArea';
 }

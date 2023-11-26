@@ -409,6 +409,9 @@ export default class Town {
       .filter(eachObject => eachObject.type === 'OfficeArea')
       .map(eachOfficeAreaObject => OfficeAreaFactory(eachOfficeAreaObject, this._broadcastEmitter));
 
+    console.log(officeAreas);
+    console.log(this._interactables);
+
     this._interactables = this._interactables
       .concat(viewingAreas)
       .concat(conversationAreas)

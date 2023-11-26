@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { Color, DrawPixel, OfficeArea, SketchBoardState } from '../../types/CoveyTownSocket';
 import OfficeAreaController, { OfficeEventTypes } from './OfficeAreaController';
+import { SKETCHBOARD_HEIGHT, SKETCHBOARD_WIDTH } from '../../../../townService/src/lib/Constants';
 
 export type TicTacToeEvents = OfficeEventTypes & {
   boardChanged: (board: Color[][]) => void;
@@ -31,9 +32,9 @@ export default class SketchBoardAreaController extends OfficeAreaController<
     // TODO: make a copy of the board instead of using exact (maybe)
     if (!this._model.office) {
       const board: Color[][] = [];
-      for (let i = 0; i < 1000; i++) {
+      for (let i = 0; i < SKETCHBOARD_HEIGHT; i++) {
         const row: Color[] = [];
-        for (let j = 0; j < 1000; j++) {
+        for (let j = 0; j < SKETCHBOARD_WIDTH; j++) {
           row.push(`#${'ffffff'}`);
         }
         board.push(row);
