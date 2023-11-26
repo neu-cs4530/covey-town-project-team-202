@@ -333,6 +333,13 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     return ret as GameAreaController<GameState, GameEventTypes>[];
   }
 
+  public get officeAreas() {
+    const ret = this._interactableControllers.filter(
+      eachInteractable => eachInteractable instanceof OfficeAreaController,
+    );
+    return ret as OfficeAreaController<OfficeState, OfficeEventTypes>[];
+  }
+
   /**
    * Begin interacting with an interactable object. Emits an event to all listeners.
    * @param interactedObj
@@ -772,6 +779,17 @@ export function useTownSettings() {
 export function useInteractableAreaController<T>(interactableAreaID: string): T {
   const townController = useTownController();
   const interactableAreaController = townController.gameAreas.find(
+    eachArea => eachArea.id == interactableAreaID,
+  );
+  if (!interactableAreaController) {
+    throw new Error(`Requested interactable area ${interactableAreaID} does not exist`);
+  }
+  return interactableAreaController as unknown as T;
+}
+
+export function useOfficeAreaController<T>(interactableAreaID: string): T {
+  const townController = useTownController();
+  const interactableAreaController = townController.officeAreas.find(
     eachArea => eachArea.id == interactableAreaID,
   );
   if (!interactableAreaController) {

@@ -1,7 +1,11 @@
 import React from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton } from '@chakra-ui/react';
 import { useCallback } from 'react';
-import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
+import {
+  useInteractable,
+  useInteractableAreaController,
+  useOfficeAreaController,
+} from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
 import OfficeArea from '../OfficeArea';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
@@ -9,8 +13,7 @@ import { InteractableID } from '../../../../types/CoveyTownSocket';
 import SketchBoardCanvas from './SketchBoardCanvas';
 
 function SketchBoardArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
-  const officeAreaController =
-    useInteractableAreaController<SketchBoardAreaController>(interactableID);
+  const officeAreaController = useOfficeAreaController<SketchBoardAreaController>(interactableID);
   //   const townController = useTownController();
 
   return (
@@ -27,7 +30,7 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
  *
  */
 export default function SketchBoardAreaWrapper(): JSX.Element {
-  console.log("SketchBoardAreaWrapperStart");
+  console.log('SketchBoardAreaWrapperStart');
   const officeArea = useInteractable<OfficeArea>('officeArea');
   const townController = useTownController();
   const closeModal = useCallback(() => {
@@ -41,7 +44,7 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
   console.log(officeArea?.getData('type'));
 
   if (officeArea && officeArea.getData('type') === 'SketchBoard') {
-    console.log("SketchBoardAreaWrapper");
+    console.log('SketchBoardAreaWrapper');
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />
