@@ -3,7 +3,7 @@ import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton } from
 import { useCallback } from 'react';
 import { useInteractable, useInteractableAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
-import OfficeAreaInteractable from '../OfficeArea';
+import OfficeArea from '../OfficeArea';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
 import SketchBoardCanvas from './SketchBoardCanvas';
@@ -27,7 +27,7 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
  *
  */
 export default function SketchBoardAreaWrapper(): JSX.Element {
-  const officeArea = useInteractable<OfficeAreaInteractable>('officeArea');
+  const officeArea = useInteractable<OfficeArea>('officeArea');
   const townController = useTownController();
   const closeModal = useCallback(() => {
     if (officeArea) {
@@ -37,7 +37,7 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
     }
   }, [townController, officeArea]);
 
-  if (officeArea && officeArea.getData('type') === 'OfficeAreaInteractable') {
+  if (officeArea && officeArea.getData('type') === 'OfficeArea') {
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />

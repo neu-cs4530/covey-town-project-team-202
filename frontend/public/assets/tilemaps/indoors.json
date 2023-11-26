@@ -570,7 +570,7 @@
                  "value":"SketchBoard"
                }],
              "rotation":0,
-             "type":"OfficeAreaInteractable",
+             "type":"OfficeArea",
              "visible":true,
              "width":135.170262542241,
              "x":3125.92,
