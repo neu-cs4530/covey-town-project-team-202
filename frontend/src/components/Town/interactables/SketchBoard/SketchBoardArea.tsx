@@ -37,7 +37,7 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
     }
   }, [townController, officeArea]);
 
-  if (officeArea && officeArea.getData('type') === 'OfficeArea') {
+  if (officeArea && officeArea.getData('type') === 'OfficeAreaInteractable') {
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />
