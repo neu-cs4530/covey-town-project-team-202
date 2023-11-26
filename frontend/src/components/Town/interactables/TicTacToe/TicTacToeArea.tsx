@@ -207,6 +207,7 @@ function TicTacToeArea({ interactableID }: { interactableID: InteractableID }): 
  *
  */
 export default function TicTacToeAreaWrapper(): JSX.Element {
+  console.log('start ttt');
   const gameArea = useInteractable<GameAreaInteractable>('gameArea');
   const townController = useTownController();
   const closeModal = useCallback(() => {
@@ -216,8 +217,11 @@ export default function TicTacToeAreaWrapper(): JSX.Element {
       controller.leaveGame();
     }
   }, [townController, gameArea]);
+  console.log(gameArea);
+  console.log(gameArea?.getData('type'));
 
   if (gameArea && gameArea.getData('type') === 'TicTacToe') {
+    console.log('entered ttt');
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />

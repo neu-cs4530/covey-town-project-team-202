@@ -27,6 +27,7 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
  *
  */
 export default function SketchBoardAreaWrapper(): JSX.Element {
+  console.log("SketchBoardAreaWrapperStart");
   const officeArea = useInteractable<OfficeArea>('officeArea');
   const townController = useTownController();
   const closeModal = useCallback(() => {
@@ -36,8 +37,11 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
       controller.leaveOffice();
     }
   }, [townController, officeArea]);
+  console.log(officeArea);
+  console.log(officeArea?.getData('type'));
 
-  if (officeArea && officeArea.getData('type') === 'OfficeArea') {
+  if (officeArea && officeArea.getData('type') === 'SketchBoard') {
+    console.log("SketchBoardAreaWrapper");
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />
