@@ -22,6 +22,7 @@ import { logError } from '../Utils';
 import ConversationArea from './ConversationArea';
 import GameAreaFactory from './games/GameAreaFactory';
 import InteractableArea from './InteractableArea';
+import OfficeAreaFactory from './productivitySuite/OfficeAreaFactory';
 import ViewingArea from './ViewingArea';
 
 /**
@@ -404,10 +405,15 @@ export default class Town {
       .filter(eachObject => eachObject.type === 'GameArea')
       .map(eachGameAreaObj => GameAreaFactory(eachGameAreaObj, this._broadcastEmitter));
 
+    const officeAreas = objectLayer.objects
+      .filter(eachObject => eachObject.type === 'OfficeArea')
+      .map(eachOfficeAreaObject => OfficeAreaFactory(eachOfficeAreaObject, this._broadcastEmitter));
+
     this._interactables = this._interactables
       .concat(viewingAreas)
       .concat(conversationAreas)
-      .concat(gameAreas);
+      .concat(gameAreas)
+      .concat(officeAreas);
     this._validateInteractables();
   }
 
