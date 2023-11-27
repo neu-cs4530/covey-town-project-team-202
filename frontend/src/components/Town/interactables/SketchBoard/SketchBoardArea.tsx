@@ -52,9 +52,15 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
   return (
     <Flex flexDirection='row'>
       <Container flexDirection='column'>
+        {/* <Button
+          onClick={async () => {
+            await officeAreaController.joinOffice();
+          }}>
+          Join SketchBoard
+        </Button> */}
         <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
         <ColorSelector officeAreaController={officeAreaController}></ColorSelector>
-        <SketchButtons></SketchButtons>
+        <SketchButtons officeAreaController={officeAreaController}></SketchButtons>
       </Container>
       <Container flexDirection='column'>
         <PlayerInfo></PlayerInfo>
