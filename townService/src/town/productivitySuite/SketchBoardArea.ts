@@ -88,6 +88,8 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
         throw new InvalidParametersError('only the leader can set privacy');
       }
       office.privacy = command.privacySetting;
+      this._stateUpdated(office.toModel());
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'OfficeUpdate') {
       const office = this._office;
@@ -99,6 +101,7 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
       }
       this.office?.applyUpdate(player, command.update);
       this._stateUpdated(office.toModel());
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'OccupancyLimit') {
       const office = this._office;
@@ -113,6 +116,7 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
       }
       office.occupancyLimit = command.limit;
       this._stateUpdated(office.toModel());
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
   }

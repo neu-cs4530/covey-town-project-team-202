@@ -84,7 +84,7 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
   }
 
   protected _leave(player: Player): void {
-    if (!this._players.filter(p => p.id === player.id)) {
+    if (this._players.filter(p => p.id === player.id).length === 0) {
       throw new Error('PLAYER DOES NOT EXIST');
     }
 
