@@ -10,19 +10,16 @@ import {
   List,
 } from '@chakra-ui/react';
 import { useCallback } from 'react';
-import {
-  useInteractable,
-  useInteractableAreaController,
-  useOfficeAreaController,
-} from '../../../../classes/TownController';
+import { useInteractable, useOfficeAreaController } from '../../../../classes/TownController';
 import useTownController from '../../../../hooks/useTownController';
 import OfficeArea from '../OfficeArea';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
 import SketchBoardCanvas from './SketchBoardCanvas';
 import {
+  COLOR_PALLETE_CHOICE_HEIGHT,
+  COLOR_PALLETE_CHOICE_WIDTH,
   SKETCHBOARD_HEIGHT,
-  SKETCHBOARD_PIXEL,
   SKETCHBOARD_WIDTH,
 } from '../../../../../../townService/src/lib/Constants';
 
@@ -38,7 +35,13 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
         {colors.map((color, id) => {
           return (
             <ListItem key={id}>
-              <div style={{ backgroundColor: color, height: '20px', width: '20px' }} />
+              <div
+                style={{
+                  backgroundColor: color,
+                  height: `${COLOR_PALLETE_CHOICE_HEIGHT}px`,
+                  width: `${COLOR_PALLETE_CHOICE_WIDTH}px`,
+                }}
+              />
             </ListItem>
           );
         })}

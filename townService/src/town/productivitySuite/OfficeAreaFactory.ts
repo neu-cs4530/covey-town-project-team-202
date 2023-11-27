@@ -4,8 +4,8 @@ import InteractableArea from '../InteractableArea';
 import SketchBoardArea from './SketchBoardArea';
 
 /**
- * Creates a new GameArea from a map object
- * @param mapObject the map object to create the game area from
+ * Creates a new OfficeArea from a map object
+ * @param mapObject the map object to create the office area from
  * @param broadcastEmitter a broadcast emitter that can be used to emit updates to players
  * @returns the interactable area
  * @throws an error if the map object is malformed

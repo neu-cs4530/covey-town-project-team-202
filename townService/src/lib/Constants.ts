@@ -5,3 +5,6 @@ export const DEFAULT_OCCUPANCY_LIMIT = 5;
 export const SKETCHBOARD_HEIGHT = 200;
 export const SKETCHBOARD_WIDTH = 400;
 export const SKETCHBOARD_PIXEL = 1;
+
+export const COLOR_PALLETE_CHOICE_HEIGHT = 20;
+export const COLOR_PALLETE_CHOICE_WIDTH = 20;

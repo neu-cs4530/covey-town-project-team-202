@@ -1,3 +1,1 @@
-export class SketchBoardAreaTest {
-
-}
+export class SketchBoardAreaTest {}

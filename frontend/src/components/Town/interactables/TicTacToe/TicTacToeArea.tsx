@@ -217,8 +217,6 @@ export default function TicTacToeAreaWrapper(): JSX.Element {
       controller.leaveGame();
     }
   }, [townController, gameArea]);
-  console.log(gameArea);
-  console.log(gameArea?.getData('type'));
 
   if (gameArea && gameArea.getData('type') === 'TicTacToe') {
     console.log('entered ttt');
