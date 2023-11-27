@@ -34,6 +34,7 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
   const [board, setBoard] = useState<Color[][]>(officeAreaController.board);
   const [currentColor, setCurrentColor] = useState<Color>(`#123456`);
   const toast = useToast();
+
   const handleBoardChanged = (newBoard: Color[][]) => {
     console.log('In handleBoardChanged');
     setBoard(newBoard);

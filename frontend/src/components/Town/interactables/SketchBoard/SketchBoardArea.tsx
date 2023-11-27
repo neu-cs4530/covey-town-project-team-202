@@ -31,6 +31,8 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
   const townController = useTownController();
   const [players, setPlayers] = useState<PlayerController[]>(officeAreaController.players);
 
+  const isPlayerInOffice = () => players.filter((player) => player.id === townController.ourPlayer.id).length > 0;
+
   useEffect(() => {
     const updateOfficeState = () => {
       setPlayers(officeAreaController.players);
@@ -43,13 +45,13 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
 
   return (
     <Container flexDirection='column' justifyContent='center'>
-      {(players.filter((player) => player.id === townController.ourPlayer.id).length === 0) && <Button
+      {(!isPlayerInOffice()) && <Button
         onClick={async () => {
           await officeAreaController.joinOffice();
         }}>
         Join SketchBoard
       </Button>}
-      {(players.filter((player) => player.id === townController.ourPlayer.id).length > 0) &&
+      {(isPlayerInOffice()) &&
         <>
           <Container
           centerContent={true}
