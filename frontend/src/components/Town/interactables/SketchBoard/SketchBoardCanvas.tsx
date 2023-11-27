@@ -32,34 +32,46 @@ export type OfficeAreaProps = {
  */
 export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaProps): JSX.Element {
   const [board, setBoard] = useState<Color[][]>(officeAreaController.board);
-  console.log(board);
+  const [currentColor, setCurrentColor] = useState<Color>(`#123456`);
   const toast = useToast();
+  const handleBoardChanged = (newBoard: Color[][]) => {
+    console.log('In handleBoardChanged');
+    setBoard(newBoard);
+  };
   useEffect(() => {
-    officeAreaController.addListener('boardChanged', setBoard);
+    officeAreaController.addListener('canvasChanged', handleBoardChanged);
     return () => {
-      officeAreaController.removeListener('boardChanged', setBoard);
+      officeAreaController.removeListener('canvasChanged', handleBoardChanged);
     };
   }, [officeAreaController]);
+
   return (
     <table style={{ border: '1px black solid' }}>
-      {board.map((row, rowIndex) => {
-        return (
-          <tr key={rowIndex}>
-            {row.map((_, colIndex) => {
-              return (
-                <td
-                  key={rowIndex * 10 + colIndex}
-                  style={{
-                    height: SKETCHBOARD_PIXEL,
-                    width: SKETCHBOARD_PIXEL,
-                    backgroundColor: board[rowIndex][colIndex],
-                  }}
-                />
-              );
-            })}
-          </tr>
-        );
-      })}
+      <tbody>
+        {board.map((row, rowIndex) => {
+          return (
+            <tr key={rowIndex}>
+              {row.map((_, colIndex) => {
+                return (
+                  <td
+                    key={rowIndex * 10 + colIndex}
+                    style={{
+                      height: SKETCHBOARD_PIXEL,
+                      width: SKETCHBOARD_PIXEL,
+                      backgroundColor: board[rowIndex][colIndex],
+                    }}
+                    onClick={async () => {
+                      await officeAreaController.drawPixel([
+                        { x: rowIndex, y: colIndex, color: currentColor },
+                      ]);
+                    }}
+                  />
+                );
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
     </table>
   );
 }

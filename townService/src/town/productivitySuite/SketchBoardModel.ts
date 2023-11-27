@@ -1,4 +1,9 @@
-import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE, SKETCHBOARD_HEIGHT, SKETCHBOARD_WIDTH } from '../../lib/Constants';
+import {
+  DEFAULT_OCCUPANCY_LIMIT,
+  PRIVATE,
+  SKETCHBOARD_HEIGHT,
+  SKETCHBOARD_WIDTH,
+} from '../../lib/Constants';
 import Player from '../../lib/Player';
 import {
   Color,
@@ -28,7 +33,10 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     });
   }
 
-  public applyUpdate(update: SketchBoardUpdateCommand): void {
+  public applyUpdate(player: Player, update: SketchBoardUpdateCommand): void {
+    if (this._players.filter(p => p.id === player.id).length === 0) {
+      throw new Error('Player not in board, cannot apply update');
+    }
     switch (update.type) {
       case 'DrawCommand':
         // eslint-disable-next-line no-case-declarations

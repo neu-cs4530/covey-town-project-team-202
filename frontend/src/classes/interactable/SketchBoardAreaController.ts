@@ -3,8 +3,8 @@ import { Color, DrawPixel, OfficeArea, SketchBoardState } from '../../types/Cove
 import OfficeAreaController, { OfficeEventTypes } from './OfficeAreaController';
 import { SKETCHBOARD_HEIGHT, SKETCHBOARD_WIDTH } from '../../../../townService/src/lib/Constants';
 
-export type TicTacToeEvents = OfficeEventTypes & {
-  boardChanged: (board: Color[][]) => void;
+export type SketchBoardEvents = OfficeEventTypes & {
+  canvasChanged: (board: Color[][]) => void;
   privacyChanged: (isOurTurn: boolean) => void;
   occupancyLimitChanged: (newLimit: number) => void;
 };
@@ -14,7 +14,7 @@ export type TicTacToeEvents = OfficeEventTypes & {
  */
 export default class SketchBoardAreaController extends OfficeAreaController<
   SketchBoardState,
-  TicTacToeEvents
+  SketchBoardEvents
 > {
   public isActive(): boolean {
     return true;
@@ -41,7 +41,8 @@ export default class SketchBoardAreaController extends OfficeAreaController<
       }
       return board;
     }
-    return this._model.office?.state.board;
+    console.log('Returning this board');
+    return this._model.office.state.board;
   }
 
   /**
@@ -60,8 +61,14 @@ export default class SketchBoardAreaController extends OfficeAreaController<
     // TODO
     const oldModel = this._model;
     super._updateFrom(newModel);
-    if (!_.isEqual(this._model.office?.state.board, oldModel.office?.state.board)) {
-      this.emit('boardChanged', this.board);
+    if (newModel) {
+      console.log('in the newModel block in _updateFrom');
+      if (!_.isEqual(newModel.office?.state.board, oldModel.office?.state.board)) {
+        console.log('should update the board');
+        console.log('Going to emit boardChanged');
+        this.emit('canvasChanged', this.board);
+        console.log('emitted boardChanged');
+      }
     }
   }
 
@@ -74,6 +81,7 @@ export default class SketchBoardAreaController extends OfficeAreaController<
    * @param col Column of the move
    */
   public async drawPixel(pixelsToDraw: DrawPixel[]) {
+    console.log('In drawPixel SketchBoardAreaController');
     const instanceID = this._instanceID;
     if (!instanceID) {
       throw new Error('No board right now');
@@ -86,6 +94,7 @@ export default class SketchBoardAreaController extends OfficeAreaController<
         stroke: pixelsToDraw,
       },
     });
+    console.log('the pixel has been received');
   }
 
   public async resetBoard() {
