@@ -31,6 +31,8 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
   const townController = useTownController();
   const [players, setPlayers] = useState<PlayerController[]>(officeAreaController.players);
 
+  const isPlayerInOffice = () => players.filter((player) => player.id === townController.ourPlayer.id).length > 0;
+
   useEffect(() => {
     const updateOfficeState = () => {
       setPlayers(officeAreaController.players);
@@ -43,53 +45,55 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
 
   return (
     <Container flexDirection='column' justifyContent='center'>
-      <Container
-        centerContent={true}
-        flexDirection='row'
-        justifyContent='center'
-        alignItems={'flex-start'}>
-        <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
-        <List>
-          {colors.map((color, id) => {
-            return (
-              <ListItem key={id}>
-                <div
-                  style={{
-                    backgroundColor: color,
-                    height: `${COLOR_PALLETE_CHOICE_HEIGHT}px`,
-                    width: `${COLOR_PALLETE_CHOICE_WIDTH}px`,
-                  }}
-                />
-              </ListItem>
-            );
-          })}
-        </List>
-        <List title='List of players on canvas:'>
-          {players.map((player, id) => {
-            return <ListItem key={id}>{player.id}</ListItem>;
-          })}
-        </List>
-      </Container>
-      <Container flexDirection='row'>
-        <Button
-          onClick={async () => {
-            await officeAreaController.joinOffice();
-          }}>
-          Join SketchBoard
-        </Button>
-        <Button
-          onClick={async () => {
-            await officeAreaController.leaveOffice();
-          }}>
-          Leave SketchBoard
-        </Button>
-        <Button
-          onClick={async () => {
-            await officeAreaController.resetBoard();
-          }}>
-          Reset SketchBoard
-        </Button>
-      </Container>
+      {(!isPlayerInOffice()) && <Button
+        onClick={async () => {
+          await officeAreaController.joinOffice();
+        }}>
+        Join SketchBoard
+      </Button>}
+      {(isPlayerInOffice()) &&
+        <>
+          <Container
+          centerContent={true}
+          flexDirection='row'
+          justifyContent='center'
+          alignItems={'flex-start'}>
+          <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
+          <List>
+            {colors.map((color, id) => {
+              return (
+                <ListItem key={id}>
+                  <div
+                    style={{
+                      backgroundColor: color,
+                      height: `${COLOR_PALLETE_CHOICE_HEIGHT}px`,
+                      width: `${COLOR_PALLETE_CHOICE_WIDTH}px`,
+                    }}/>
+                </ListItem>
+              );
+            })}
+          </List>
+          <List title='List of players on canvas:'>
+            {players.map((player, id) => {
+              return <ListItem key={id}>{player.id}</ListItem>;
+            })}
+          </List>
+          </Container><Container flexDirection='row'>
+            <Button
+              onClick={async () => {
+                await officeAreaController.leaveOffice();
+              }}>
+              Leave SketchBoard
+            </Button>
+            <Button
+              onClick={async () => {
+                await officeAreaController.resetBoard();
+              }}>
+              Reset SketchBoard
+            </Button>
+          </Container>
+        </>
+      }
     </Container>
   );
 }
