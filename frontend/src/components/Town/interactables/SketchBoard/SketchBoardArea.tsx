@@ -1,5 +1,14 @@
 import React from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton } from '@chakra-ui/react';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  Container,
+  ListItem,
+  List,
+} from '@chakra-ui/react';
 import { useCallback } from 'react';
 import {
   useInteractable,
@@ -11,15 +20,30 @@ import OfficeArea from '../OfficeArea';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
 import SketchBoardCanvas from './SketchBoardCanvas';
+import {
+  SKETCHBOARD_HEIGHT,
+  SKETCHBOARD_PIXEL,
+  SKETCHBOARD_WIDTH,
+} from '../../../../../../townService/src/lib/Constants';
 
 function SketchBoardArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
+  const colors = ['red', 'green', 'blue', 'black'];
   const officeAreaController = useOfficeAreaController<SketchBoardAreaController>(interactableID);
   //   const townController = useTownController();
 
   return (
-    <>
+    <Container centerContent={true} flexDirection='row' justifyContent='center'>
       <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
-    </>
+      <List>
+        {colors.map((color, id) => {
+          return (
+            <ListItem key={id}>
+              <div style={{ backgroundColor: color, height: '20px', width: '20px' }} />
+            </ListItem>
+          );
+        })}
+      </List>
+    </Container>
   );
 }
 
@@ -48,7 +72,7 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxH={`${SKETCHBOARD_HEIGHT * 2.5}px`} maxW={`${SKETCHBOARD_WIDTH * 2.5}px`}>
           <ModalHeader>{officeArea.name}</ModalHeader>
           <ModalCloseButton />
           <SketchBoardArea interactableID={officeArea.name} />;

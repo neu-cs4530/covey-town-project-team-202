@@ -1,33 +1,16 @@
-import { Button, chakra, Container, useToast } from '@chakra-ui/react';
+import { border, Button, chakra, Container, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { SKETCHBOARD_PIXEL, SKETCHBOARD_WIDTH, SKETCHBOARD_HEIGHT } from '../../../../../../townService/src/lib/Constants';
+import {
+  SKETCHBOARD_PIXEL,
+  SKETCHBOARD_WIDTH,
+  SKETCHBOARD_HEIGHT,
+} from '../../../../../../townService/src/lib/Constants';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { Color } from '../../../../types/CoveyTownSocket';
 
 export type OfficeAreaProps = {
   officeAreaController: SketchBoardAreaController;
 };
-
-/**
- * A component that will render a single cell in the TicTacToe board, styled
- */
-const StyledSketchBoardSquare = chakra(Button, {
-  baseStyle: {
-    flexBasis: `${1/SKETCHBOARD_HEIGHT}%`,
-    fontSize: `${SKETCHBOARD_PIXEL}px`,
-  },
-});
-/**
- * A component that will render the TicTacToe board, styled
- */
-const StyledSketchBoard = chakra(Container, {
-  baseStyle: {
-    display: 'flex',
-    width: `${SKETCHBOARD_WIDTH}px`,
-    padding: '5px',
-    flexWrap: 'wrap',
-  },
-});
 
 /**
  * A component that renders the TicTacToe board
@@ -58,12 +41,25 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
     };
   }, [officeAreaController]);
   return (
-    <StyledSketchBoard aria-label='Sketch-board-canvas'>
+    <table style={{ border: '1px black solid' }}>
       {board.map((row, rowIndex) => {
-        return row.map((cell, colIndex) => {
-          return <StyledSketchBoardSquare key={rowIndex * 1000 + colIndex} />;
-        });
+        return (
+          <tr key={rowIndex}>
+            {row.map((_, colIndex) => {
+              return (
+                <td
+                  key={rowIndex * 10 + colIndex}
+                  style={{
+                    height: SKETCHBOARD_PIXEL,
+                    width: SKETCHBOARD_PIXEL,
+                    backgroundColor: board[rowIndex][colIndex],
+                  }}
+                />
+              );
+            })}
+          </tr>
+        );
       })}
-    </StyledSketchBoard>
+    </table>
   );
 }
