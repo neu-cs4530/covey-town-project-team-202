@@ -1,9 +1,8 @@
 import { nanoid } from 'nanoid';
 import { mock } from 'jest-mock-extended';
-import { JoinOfficeCommand, TownEmitter } from '../../types/CoveyTownSocket';
+import { JoinOfficeCommand, LeaveOfficeCommand, TownEmitter } from '../../types/CoveyTownSocket';
 import SketchBoardArea from './SketchBoardArea';
 import { createPlayerForTesting } from '../../TestUtils';
-import exp from 'constants';
 
 describe('SketchBoardArea', () => {
   let area: SketchBoardArea;
@@ -55,13 +54,52 @@ describe('SketchBoardArea', () => {
           area.handleCommand(command, player1);
         }).toThrowError();
       });
-      test('should emit a town changed event when a player joins an office', () => {
+      test('should emit a town changed event when a player joins an office with the new player', () => {
+        townEmitter.emit.mockClear();
         const command: JoinOfficeCommand = { type: 'JoinOffice' };
         area.handleCommand(command, player1);
         expect(townEmitter.emit).toHaveBeenCalledWith('interactableUpdate', {
-          coveyTownID: id,
-          occupants: [player1.id],
+          ...area.toModel(),
+          office: { ...area.office?.toModel(), players: [player1.id] },
         });
+      });
+      test('should emit a town changed event when a player joins an office with all of the players', () => {
+        townEmitter.emit.mockClear();
+        const command: JoinOfficeCommand = { type: 'JoinOffice' };
+        area.handleCommand(command, player1);
+        townEmitter.emit.mockClear();
+        area.handleCommand(command, player2);
+        expect(townEmitter.emit).toHaveBeenCalledWith('interactableUpdate', {
+          ...area.toModel(),
+          office: { ...area.office?.toModel(), players: [player1.id, player2.id] },
+        });
+      });
+    });
+    describe('LeaveOffice', () => {
+      test('should throw an error if the player is not in an office', () => {
+        const command: LeaveOfficeCommand = {
+          type: 'LeaveOffice',
+          officeID: area.office?.id ?? nanoid(),
+        };
+        expect(() => {
+          area.handleCommand(command, player1);
+        }).toThrowError();
+      });
+      test('should throw an error if the command office id does not match the area office id', () => {
+        const command: LeaveOfficeCommand = { type: 'LeaveOffice', officeID: nanoid() };
+        area.handleCommand({ type: 'JoinOffice' }, player1);
+        expect(() => {
+          area.handleCommand(command, player1);
+        }).toThrowError();
+      });
+      test('should return undefined if the leave command is succesful', () => {
+        area.handleCommand({ type: 'JoinOffice' }, player1);
+        const command: LeaveOfficeCommand = {
+          type: 'LeaveOffice',
+          officeID: area.office?.id ?? nanoid(),
+        };
+        const result = area.handleCommand(command, player1);
+        expect(result).toBeUndefined();
       });
     });
   });
