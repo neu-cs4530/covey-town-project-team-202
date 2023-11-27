@@ -9,6 +9,7 @@ import {
   ListItem,
   List,
   Button,
+  Flex,
 } from '@chakra-ui/react';
 import { useCallback } from 'react';
 import { useInteractable, useOfficeAreaController } from '../../../../classes/TownController';
@@ -21,9 +22,14 @@ import {
   COLOR_PALLETE_CHOICE_HEIGHT,
   COLOR_PALLETE_CHOICE_WIDTH,
   SKETCHBOARD_HEIGHT,
+  SKETCHBOARD_PIXEL,
   SKETCHBOARD_WIDTH,
 } from '../../../../../../townService/src/lib/Constants';
 import PlayerController from '../../../../classes/PlayerController';
+import ColorSelector from './ColorSelector';
+import PlayerInfo from './PlayerInfo';
+import LeaderSettings from './LeaderSettings';
+import SketchButtons from './SketchButtons';
 
 function SketchBoardArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const colors = ['red', 'green', 'blue', 'black'];
@@ -31,7 +37,8 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
   const townController = useTownController();
   const [players, setPlayers] = useState<PlayerController[]>(officeAreaController.players);
 
-  const isPlayerInOffice = () => players.filter((player) => player.id === townController.ourPlayer.id).length > 0;
+  const isPlayerInOffice = () =>
+    players.filter(player => player.id === townController.ourPlayer.id).length > 0;
 
   useEffect(() => {
     const updateOfficeState = () => {
@@ -42,61 +49,75 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
       officeAreaController.removeListener('officeUpdated', updateOfficeState);
     };
   }, [townController, officeAreaController]);
-
   return (
-    <Container flexDirection='column' justifyContent='center'>
-      {(!isPlayerInOffice()) && <Button
-        onClick={async () => {
-          await officeAreaController.joinOffice();
-        }}>
-        Join SketchBoard
-      </Button>}
-      {(isPlayerInOffice()) &&
-        <>
-          <Container
-          centerContent={true}
-          flexDirection='row'
-          justifyContent='center'
-          alignItems={'flex-start'}>
-          <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
-          <List>
-            {colors.map((color, id) => {
-              return (
-                <ListItem key={id}>
-                  <div
-                    style={{
-                      backgroundColor: color,
-                      height: `${COLOR_PALLETE_CHOICE_HEIGHT}px`,
-                      width: `${COLOR_PALLETE_CHOICE_WIDTH}px`,
-                    }}/>
-                </ListItem>
-              );
-            })}
-          </List>
-          <List title='List of players on canvas:'>
-            {players.map((player, id) => {
-              return <ListItem key={id}>{player.id}</ListItem>;
-            })}
-          </List>
-          </Container><Container flexDirection='row'>
-            <Button
-              onClick={async () => {
-                await officeAreaController.leaveOffice();
-              }}>
-              Leave SketchBoard
-            </Button>
-            <Button
-              onClick={async () => {
-                await officeAreaController.resetBoard();
-              }}>
-              Reset SketchBoard
-            </Button>
-          </Container>
-        </>
-      }
-    </Container>
+    <Flex flexDirection='row'>
+      <Container flexDirection='column'>
+        <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
+        <ColorSelector officeAreaController={officeAreaController}></ColorSelector>
+        <SketchButtons></SketchButtons>
+      </Container>
+      <Container flexDirection='column'>
+        <PlayerInfo></PlayerInfo>
+        <LeaderSettings></LeaderSettings>
+      </Container>
+    </Flex>
   );
 }
+
+// return (
+//   <Container flexDirection='column' justifyContent='center'>
+//     {(!isPlayerInOffice()) && <Button
+//       onClick={async () => {
+//         await officeAreaController.joinOffice();
+//       }}>
+//       Join SketchBoard
+//     </Button>}
+//     {(isPlayerInOffice()) &&
+//       <>
+//         <Container
+//         centerContent={true}
+//         flexDirection='row'
+//         justifyContent='center'
+//         alignItems={'flex-start'}>
+//         <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
+//         <List>
+//           {colors.map((color, id) => {
+//             return (
+//               <ListItem key={id}>
+//                 <div
+//                   style={{
+//                     backgroundColor: color,
+//                     height: `${COLOR_PALLETE_CHOICE_HEIGHT}px`,
+//                     width: `${COLOR_PALLETE_CHOICE_WIDTH}px`,
+//                   }}/>
+//               </ListItem>
+//             );
+//           })}
+//         </List>
+//         <List title='List of players on canvas:'>
+//           {players.map((player, id) => {
+//             return <ListItem key={id}>{player.id}</ListItem>;
+//           })}
+//         </List>
+//         </Container><Container flexDirection='row'>
+//           <Button
+//             onClick={async () => {
+//               await officeAreaController.leaveOffice();
+//             }}>
+//             Leave SketchBoard
+//           </Button>
+//           <Button
+//             onClick={async () => {
+//               await officeAreaController.resetBoard();
+//             }}>
+//             Reset SketchBoard
+//           </Button>
+//         </Container>
+//       </>
+//     }
+//   </Container>
+// );
+// }
 
 /**
  * A wrapper component for the TicTacToeArea component.
@@ -119,7 +140,10 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />
-        <ModalContent maxH={`${SKETCHBOARD_HEIGHT * 3}px`} maxW={`${SKETCHBOARD_WIDTH * 3}px`}>
+        <ModalContent
+        // maxH={`${SKETCHBOARD_HEIGHT * SKETCHBOARD_PIXEL * 2}px`}
+        // maxW={`${SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL * 2}px`}
+        >
           <ModalHeader>{officeArea.name}</ModalHeader>
           <ModalCloseButton />
           <SketchBoardArea interactableID={officeArea.name} />;
