@@ -91,7 +91,17 @@ export interface OfficeState {
 export interface SketchBoardState extends OfficeState {
   board: Color[][];
   backgroundColor: Color;
+  pointsList: PlayerScore[];
 }
+
+export interface PlayerScore { 
+  playerID: PlayerID;
+  score: number;
+}
+
+// Make a set score in Model. Take in the player we are updating
+// Make an UpdateScore command
+// Update from in Model -> Add new case for this command
 
 export type Color = `#${string}`;
 
@@ -212,7 +222,7 @@ export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | 
 
 export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand> | OccupancyLimitCommand;
 
-export type SketchBoardUpdateCommand = DrawCommand | ResetCommand
+export type SketchBoardUpdateCommand = DrawCommand | ResetCommand | UpdateScoreCommand;
 
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
@@ -263,6 +273,11 @@ export interface DrawPixel {
 }
 export interface ResetCommand {
   type: 'ResetCommand';
+}
+export interface UpdateScoreCommand {
+  type: 'UpdateScore';
+  playerID: PlayerID;
+  score: number;
 }
 export type InteractableCommandReturnType<CommandType extends InteractableCommand> = 
   CommandType extends JoinGameCommand ? { gameID: string}:

@@ -1,11 +1,18 @@
-import { DEFAULT_OCCUPANCY_LIMIT, PRIVATE, SKETCHBOARD_HEIGHT, SKETCHBOARD_WIDTH } from '../../lib/Constants';
+import {
+  DEFAULT_OCCUPANCY_LIMIT,
+  PRIVATE,
+  SKETCHBOARD_HEIGHT,
+  SKETCHBOARD_WIDTH,
+} from '../../lib/Constants';
 import Player from '../../lib/Player';
 import {
   Color,
   DrawCommand,
   DrawPixel,
+  PlayerScore,
   SketchBoardState,
   SketchBoardUpdateCommand,
+  UpdateScoreCommand,
 } from '../../types/CoveyTownSocket';
 import Office from './OfficeModel';
 
@@ -25,6 +32,7 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
       privacy: 'PUBLIC',
       occupancyLimit: DEFAULT_OCCUPANCY_LIMIT,
       leader: undefined,
+      pointsList: [],
     });
   }
 
@@ -38,7 +46,29 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
       case 'ResetCommand':
         this._resetBoard();
         break;
+      case 'UpdateScore':
+        this._updateScore(update);
+        break;
       default:
+    }
+  }
+
+  private _updateScore(update: UpdateScoreCommand): void {
+    const { playerID, score } = update;
+
+    if (this._players.filter(p => p.id === playerID).length === 0) {
+      throw new Error('Player is not in sketch board');
+    }
+
+    const playerScore = this.state.pointsList.find(p => p.playerID === playerID);
+    if (playerScore) {
+      playerScore.score = score;
+    } else {
+      const newPlayerScore: PlayerScore = {
+        playerID,
+        score,
+      };
+      this.state.pointsList.push(newPlayerScore);
     }
   }
 
@@ -59,7 +89,7 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
 
   protected _join(player: Player): void {
     if (this._players.length === this.occupancyLimit) {
-      throw new Error('Method not implemented.');
+      throw new Error('Sketch board is full');
     }
 
     if (this._players.filter(p => p.id === player.id).length > 0) {
