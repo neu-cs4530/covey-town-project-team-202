@@ -183,6 +183,7 @@ export class TownsController extends Controller {
 
     const newPlayer = await town.addPlayer(userName, socket);
     assert(newPlayer.videoToken);
+    console.log(town.interactables);
     socket.emit('initialize', {
       userID: newPlayer.id,
       sessionToken: newPlayer.sessionToken,

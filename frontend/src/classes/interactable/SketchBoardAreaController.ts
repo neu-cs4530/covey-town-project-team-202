@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import { Color, DrawPixel, OfficeArea, SketchBoardState } from '../../types/CoveyTownSocket';
-import PlayerController from '../PlayerController';
 import OfficeAreaController, { OfficeEventTypes } from './OfficeAreaController';
+import { SKETCHBOARD_HEIGHT, SKETCHBOARD_WIDTH } from '../../../../townService/src/lib/Constants';
 
 export type TicTacToeEvents = OfficeEventTypes & {
-  boardChanged: (board: Color[][] | undefined) => void;
+  boardChanged: (board: Color[][]) => void;
   privacyChanged: (isOurTurn: boolean) => void;
   occupancyLimitChanged: (newLimit: number) => void;
 };
@@ -28,8 +28,19 @@ export default class SketchBoardAreaController extends OfficeAreaController<
    * The 2-dimensional array is indexed by row and then column, so board[0][0] is the top-left cell,
    * and board[2][2] is the bottom-right cell
    */
-  get board(): Color[][] | undefined {
+  get board(): Color[][] {
     // TODO: make a copy of the board instead of using exact (maybe)
+    if (!this._model.office) {
+      const board: Color[][] = [];
+      for (let i = 0; i < SKETCHBOARD_HEIGHT; i++) {
+        const row: Color[] = [];
+        for (let j = 0; j < SKETCHBOARD_WIDTH; j++) {
+          row.push(`#${'ffffff'}`);
+        }
+        board.push(row);
+      }
+      return board;
+    }
     return this._model.office?.state.board;
   }
 
@@ -50,7 +61,7 @@ export default class SketchBoardAreaController extends OfficeAreaController<
     const oldModel = this._model;
     super._updateFrom(newModel);
     if (!_.isEqual(this._model.office?.state.board, oldModel.office?.state.board)) {
-      this.emit('boardChanged', this._model.office?.state.board);
+      this.emit('boardChanged', this.board);
     }
   }
 

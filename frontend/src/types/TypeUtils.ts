@@ -4,6 +4,8 @@ import {
   TicTacToeGameState,
   ViewingArea,
   GameArea,
+  SketchBoardState,
+  OfficeArea,
 } from './CoveyTownSocket';
 
 /**
@@ -24,4 +26,11 @@ export function isTicTacToeArea(
   interactable: Interactable,
 ): interactable is GameArea<TicTacToeGameState> {
   return interactable.type === 'TicTacToeArea';
+}
+
+export function isSketchBoardArea(
+  interactable: Interactable,
+): interactable is OfficeArea<SketchBoardState> {
+  console.log(interactable.type);
+  return interactable.type === 'SketchBoardArea';
 }
