@@ -95,5 +95,5 @@ export default abstract class Office<StateType extends OfficeState, UpdateType> 
     return this._state.occupancyLimit;
   }
 
-  public abstract applyUpdate(update: UpdateType): void;
+  public abstract applyUpdate(player: Player, update: UpdateType): void;
 }

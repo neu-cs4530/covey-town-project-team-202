@@ -62,7 +62,7 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
       }
       office.join(player);
       this._stateUpdated(office.toModel());
-      return { gameID: office.id } as InteractableCommandReturnType<CommandType>;
+      return { officeID: office.id } as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'LeaveOffice') {
       const office = this._office;
@@ -88,6 +88,8 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
         throw new InvalidParametersError('only the leader can set privacy');
       }
       office.privacy = command.privacySetting;
+      this._stateUpdated(office.toModel());
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'OfficeUpdate') {
       const office = this._office;
@@ -97,7 +99,9 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
       if (this._office?.id !== command.officeID) {
         throw new InvalidParametersError('invalid office ID');
       }
-      this.office?.applyUpdate(command.update);
+      this.office?.applyUpdate(player, command.update);
+      this._stateUpdated(office.toModel());
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'OccupancyLimit') {
       const office = this._office;
@@ -111,6 +115,8 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
         throw new InvalidParametersError('only the leader can set privacy');
       }
       office.occupancyLimit = command.limit;
+      this._stateUpdated(office.toModel());
+      return undefined as InteractableCommandReturnType<CommandType>;
     }
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
   }

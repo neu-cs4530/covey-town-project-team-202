@@ -7,6 +7,7 @@ import {
 } from '../../../../../../townService/src/lib/Constants';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { Color } from '../../../../types/CoveyTownSocket';
+import { on } from 'events';
 
 export type OfficeAreaProps = {
   officeAreaController: SketchBoardAreaController;
@@ -32,34 +33,58 @@ export type OfficeAreaProps = {
  */
 export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaProps): JSX.Element {
   const [board, setBoard] = useState<Color[][]>(officeAreaController.board);
-  console.log(board);
+  const [currentColor, setCurrentColor] = useState<Color>(`#123456`);
+  const [shouldDraw, setShouldDraw] = useState<boolean>(false);
   const toast = useToast();
+
+  const handleBoardChanged = (newBoard: Color[][]) => {
+    console.log('In handleBoardChanged');
+    setBoard(newBoard);
+  };
   useEffect(() => {
-    officeAreaController.addListener('boardChanged', setBoard);
+    officeAreaController.addListener('canvasChanged', handleBoardChanged);
     return () => {
-      officeAreaController.removeListener('boardChanged', setBoard);
+      officeAreaController.removeListener('canvasChanged', handleBoardChanged);
     };
   }, [officeAreaController]);
+
+  const draw = async () => {
+    if (shouldDraw) {
+      await officeAreaController.drawPixel([{ x: 0, y: 0, color: currentColor }]);
+    }
+  };
+
   return (
     <table style={{ border: '1px black solid' }}>
-      {board.map((row, rowIndex) => {
-        return (
-          <tr key={rowIndex}>
-            {row.map((_, colIndex) => {
-              return (
-                <td
-                  key={rowIndex * 10 + colIndex}
-                  style={{
-                    height: SKETCHBOARD_PIXEL,
-                    width: SKETCHBOARD_PIXEL,
-                    backgroundColor: board[rowIndex][colIndex],
-                  }}
-                />
-              );
-            })}
-          </tr>
-        );
-      })}
+      <tbody>
+        {board.map((row, rowIndex) => {
+          return (
+            <tr key={rowIndex}>
+              {row.map((_, colIndex) => {
+                return (
+                  <td
+                    key={rowIndex * 10 + colIndex}
+                    style={{
+                      height: SKETCHBOARD_PIXEL,
+                      width: '20px',
+                      backgroundColor: board[rowIndex][colIndex],
+                    }}
+                    onMouseDown={() => setShouldDraw(true)}
+                    onMouseUp={() => setShouldDraw(false)}
+                    onMouseEnter={async () => {
+                      if (shouldDraw) {
+                        await officeAreaController.drawPixel([
+                          { x: rowIndex, y: colIndex, color: currentColor },
+                        ]);
+                      }
+                    }}
+                  />
+                );
+              })}
+            </tr>
+          );
+        })}
+      </tbody>
     </table>
   );
 }

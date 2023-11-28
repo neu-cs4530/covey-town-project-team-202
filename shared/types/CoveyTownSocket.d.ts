@@ -284,6 +284,12 @@ export type InteractableCommandReturnType<CommandType extends InteractableComman
   CommandType extends ViewingAreaUpdateCommand ? undefined :
   CommandType extends GameMoveCommand<TicTacToeMove> ? undefined :
   CommandType extends LeaveGameCommand ? undefined :
+  CommandType extends JoinOfficeCommand ? { officeID: string}:
+  CommandType extends GameMoveCommand<TicTacToeMove> ? undefined :
+  CommandType extends LeaveOfficeCommand ? undefined :
+  CommandType extends OfficeUpdateCommand<SketchBoardUpdateCommand> ? undefined :
+  CommandType extends PrivacyCommand ? undefined :
+  CommandType extends OccupancyLimitCommand ? undefined :
   never;
 
 export type InteractableCommandResponse<MessageType> = {

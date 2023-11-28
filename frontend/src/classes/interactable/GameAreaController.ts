@@ -62,10 +62,10 @@ export default abstract class GameAreaController<
    * @throws An error if the server rejects the request to join the game.
    */
   public async joinGame() {
-    const { gameID } = await this._townController.sendInteractableCommand(this.id, {
+    const { officeID } = await this._townController.sendInteractableCommand(this.id, {
       type: 'JoinGame',
     });
-    this._instanceID = gameID;
+    this._instanceID = officeID;
   }
 
   /**

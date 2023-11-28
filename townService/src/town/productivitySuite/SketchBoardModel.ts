@@ -36,7 +36,10 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     });
   }
 
-  public applyUpdate(update: SketchBoardUpdateCommand): void {
+  public applyUpdate(player: Player, update: SketchBoardUpdateCommand): void {
+    if (this._players.filter(p => p.id === player.id).length === 0) {
+      throw new Error('Player not in board, cannot apply update');
+    }
     switch (update.type) {
       case 'DrawCommand':
         // eslint-disable-next-line no-case-declarations
@@ -106,7 +109,7 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
   }
 
   protected _leave(player: Player): void {
-    if (!this._players.filter(p => p.id === player.id)) {
+    if (this._players.filter(p => p.id === player.id).length === 0) {
       throw new Error('PLAYER DOES NOT EXIST');
     }
 

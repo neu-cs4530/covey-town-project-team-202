@@ -97,7 +97,7 @@ export default abstract class OfficeAreaController<
     this._model = newModel;
     //eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    this.emit('gameUpdated');
+    this.emit('officeUpdated');
     this._instanceID = newModel.office?.id ?? this._instanceID;
   }
 
