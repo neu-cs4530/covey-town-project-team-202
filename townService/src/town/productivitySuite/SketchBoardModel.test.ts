@@ -51,6 +51,9 @@ describe('SketchBoardModel', () => {
   });
   describe('leave', () => {});
   describe('applyUpdate', () => {
+    beforeEach(() => {
+      office.join(player1);
+    });
     test('draw pixel on canvas', () => {
       const pixelToDraw: DrawPixel = {
         x: 0,
@@ -90,6 +93,49 @@ describe('SketchBoardModel', () => {
       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(c =>
         expect(office.state.board[c][c]).toBe(`#${111111}`),
       );
+    });
+    test('reset canvas resets draw pixels back to white', () => {
+      const pixelToDraw: DrawPixel = {
+        x: 0,
+        y: 0,
+        color: `#${111111}`,
+      };
+      const drawCommand: DrawCommand = {
+        type: 'DrawCommand',
+        stroke: [pixelToDraw],
+      };
+      const updateToSend: OfficeUpdate<SketchBoardUpdateCommand> = {
+        playerID: player1.id,
+        officeID: office.id,
+        update: drawCommand,
+      };
+      office.applyUpdate(player1, updateToSend.update);
+      expect(office.state.board[0][0]).toBe(`#${111111}`);
+
+      office.applyUpdate(player1, { type: 'ResetCommand' });
+      expect(office.state.board[0][0]).toBe(`#ffffff`);
+    });
+    test('update command updates the score of a player', () => {
+      const updateToSend: OfficeUpdate<SketchBoardUpdateCommand> = {
+        playerID: player1.id,
+        officeID: office.id,
+        update: { type: 'UpdateScore', playerID: player1.id, score: 10 },
+      };
+      expect(office.state.pointsList.length).toBe(0);
+      office.applyUpdate(player1, updateToSend.update);
+      expect(office.state.pointsList.length).toBe(1);
+      expect(office.state.pointsList[0].score).toBe(10);
+      expect(office.state.pointsList[0].playerID).toBe(player1.id);
+    });
+    test('update command throws an error if the player in the update command is not in the board session', () => {
+      const player2 = createPlayerForTesting();
+      const updateToSend: OfficeUpdate<SketchBoardUpdateCommand> = {
+        playerID: player2.id,
+        officeID: office.id,
+        update: { type: 'UpdateScore', playerID: player2.id, score: 10 },
+      };
+      expect(office.state.pointsList.length).toBe(0);
+      expect(() => office.applyUpdate(player1, updateToSend.update)).toThrowError();
     });
   });
 });
