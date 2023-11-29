@@ -88,7 +88,7 @@ export default class SketchBoardAreaController extends OfficeAreaController<
    * @param pixelsToDraw the list of pixels to draw with the respective color
    */
   public async drawPixel(pixelsToDraw: DrawPixel[]) {
-    this._sendInteractableCommandHelper({
+    await this._sendInteractableCommandHelper({
       type: 'OfficeUpdate',
       officeID: 's',
       update: {
@@ -102,7 +102,7 @@ export default class SketchBoardAreaController extends OfficeAreaController<
    * Sends a request to the server to reset the board
    */
   public async resetBoard() {
-    this._sendInteractableCommandHelper({
+    await this._sendInteractableCommandHelper({
       type: 'OfficeUpdate',
       officeID: 's',
       update: {
@@ -122,7 +122,7 @@ export default class SketchBoardAreaController extends OfficeAreaController<
   }
 
   public async setDrawEnabled(newDrawEnabledValue: boolean) {
-    this._sendInteractableCommandHelper({
+    await this._sendInteractableCommandHelper({
       type: 'SetDrawEnableCommand',
       newDrawEnable: newDrawEnabledValue,
     });
@@ -167,7 +167,7 @@ export default class SketchBoardAreaController extends OfficeAreaController<
    * @param newScore the new score to give the player
    */
   public async newScore(playerID: PlayerID, newScore: number) {
-    this._sendInteractableCommandHelper({
+    await this._sendInteractableCommandHelper({
       type: 'OfficeUpdate',
       officeID: 's',
       update: {
