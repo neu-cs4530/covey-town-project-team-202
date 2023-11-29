@@ -1,4 +1,3 @@
-import { useToast } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react';
 import {
   SKETCHBOARD_PIXEL,
