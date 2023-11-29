@@ -4,6 +4,7 @@ import {
   DrawPixel,
   OfficeArea,
   PlayerID,
+  PlayerScore,
   SketchBoardState,
 } from '../../types/CoveyTownSocket';
 import OfficeAreaController, { OfficeEventTypes } from './OfficeAreaController';
@@ -13,6 +14,7 @@ export type SketchBoardEvents = OfficeEventTypes & {
   canvasChanged: (board: Color[][]) => void;
   occupancyLimitChanged: (newLimit: number) => void;
   drawEnableChanged: (newDrawEnable: boolean) => void;
+  scoresChanged: (newScores: PlayerScore[]) => void;
 };
 
 /**
@@ -74,9 +76,10 @@ export default class SketchBoardAreaController extends OfficeAreaController<
         this.emit('drawEnableChanged', newModel.office.state.drawEnabled);
       }
       if (oldModel.office?.state.privacy !== newModel.office.state.privacy) {
-        //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         this.emit('roomLockChanged', this.roomLocked);
+      }
+      if (oldModel.office?.state.pointsList !== newModel.office.state.pointsList) {
+        this.emit('scoresChanged', this.playerScores);
       }
     }
   }
@@ -144,6 +147,29 @@ export default class SketchBoardAreaController extends OfficeAreaController<
       this._setPrivacy('PRIVATE');
     } else {
       this._setPrivacy('PUBLIC');
+    }
+  }
+
+  public get isPlayerLeader(): boolean {
+    return this._townController.ourPlayer.id === this._model.office?.state.leader;
+  }
+
+  public get playerScores(): PlayerScore[] {
+    return this._model.office?.state.pointsList ?? [];
+  }
+
+  public async newScore(playerID: PlayerID, newScore: number) {
+    const instanceID = this._instanceID;
+    if (instanceID) {
+      await this._townController.sendInteractableCommand(this.id, {
+        type: 'OfficeUpdate',
+        officeID: instanceID,
+        update: {
+          type: 'UpdateScore',
+          playerID: playerID,
+          score: newScore,
+        },
+      });
     }
   }
 }
