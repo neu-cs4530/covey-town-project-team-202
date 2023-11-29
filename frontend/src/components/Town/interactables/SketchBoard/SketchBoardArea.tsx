@@ -90,8 +90,6 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
           Join SketchBoard
         </Button>
       )}
-      {!isPlayerInOffice() && roomLocked && <div>The room is currently locked</div>}
-      Draw is {drawEnabled ? 'on' : 'off'}
     </>
   );
 }
