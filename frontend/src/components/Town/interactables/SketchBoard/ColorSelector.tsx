@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { TwitterPicker } from 'react-color';
 import { OfficeAreaProps } from './SketchBoardCanvas';
 import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
