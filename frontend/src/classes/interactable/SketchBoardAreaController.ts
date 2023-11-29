@@ -186,5 +186,6 @@ export default class SketchBoardAreaController extends OfficeAreaController<
         officeID: instanceID,
       });
     }
+    throw new Error('No instance id yet');
   }
 }
