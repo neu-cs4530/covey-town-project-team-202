@@ -49,7 +49,7 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
           Join SketchBoard
         </Button> */}
         <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
-        <ColorSelector ></ColorSelector>
+        <ColorSelector></ColorSelector>
         <SketchButtons officeAreaController={officeAreaController}></SketchButtons>
       </Container>
       <Container flexDirection='column'>
