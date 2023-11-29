@@ -79,7 +79,7 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
             <Container flexDirection='column'>
               <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
               <Flex flexDirection='row'>
-                <ColorSelector officeAreaController={officeAreaController}></ColorSelector>
+                <ColorSelector></ColorSelector>
                 <SketchButtons officeAreaController={officeAreaController}></SketchButtons>
               </Flex>
             </Container>
