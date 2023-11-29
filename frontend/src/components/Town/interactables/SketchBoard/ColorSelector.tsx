@@ -1,10 +1,14 @@
 import React, { useContext } from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { TwitterPicker } from 'react-color';
 import { OfficeAreaProps } from './SketchBoardCanvas';
 import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
 import { Box } from '@chakra-ui/react';
 
+/**
+ * ColorSelector component that has the available colors for a sketch board
+ * @param officeAreaController the office area controller being used
+ * @constructor
+ */
 export default function ColorSelector({ officeAreaController }: OfficeAreaProps): JSX.Element {
   const { color, setColor } = useContext(SketchBoardContext) as SketchBoardContextType;
 

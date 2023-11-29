@@ -18,6 +18,11 @@ import SketchBoardAreaController from '../../../../classes/interactable/SketchBo
 import PlayerController from '../../../../classes/PlayerController';
 import PlayerName from '../../../SocialSidebar/PlayerName';
 
+/**
+ * PlayerInfo component with a list of players and their scores
+ * @param officeAreaController the controller of the specific office area
+ * @constructor
+ */
 export default function PlayerInfo({
   officeAreaController,
 }: {

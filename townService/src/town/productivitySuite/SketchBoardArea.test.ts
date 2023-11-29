@@ -7,6 +7,7 @@ import {
   OfficeUpdateCommand,
   PrivacyCommand,
   ResetCommand,
+  SetDrawEnableCommand,
   TownEmitter,
 } from '../../types/CoveyTownSocket';
 import SketchBoardArea from './SketchBoardArea';
@@ -290,6 +291,47 @@ describe('SketchBoardArea', () => {
 
         const result = area.handleCommand(command, player1);
         expect(result).toBeUndefined();
+      });
+    });
+    describe('drawEnabled', () => {
+      it('should emit a town changed event when the drawEnabled is changed', () => {
+        area.handleCommand({ type: 'JoinOffice' }, player1);
+
+        townEmitter.emit.mockClear();
+        const command: SetDrawEnableCommand = {
+          type: 'SetDrawEnableCommand',
+          newDrawEnable: true,
+        };
+
+        area.handleCommand(command, player1);
+        expect(townEmitter.emit).toHaveBeenCalledWith('interactableUpdate', {
+          ...area.toModel(),
+          office: {
+            ...area.office?.toModel(),
+            state: { ...area.office?.state, drawEnabled: true },
+          },
+        });
+      });
+      it('should throw an error when the drawEnabled is changed by a non-leader', () => {
+        area.handleCommand({ type: 'JoinOffice' }, player1);
+        area.handleCommand({ type: 'JoinOffice' }, player2);
+
+        townEmitter.emit.mockClear();
+        const command: SetDrawEnableCommand = {
+          type: 'SetDrawEnableCommand',
+          newDrawEnable: true,
+        };
+
+        expect(() => area.handleCommand(command, player2)).toThrowError();
+      });
+      it('should throw an error when there is no office', () => {
+        const command: SetDrawEnableCommand = {
+          type: 'SetDrawEnableCommand',
+          newDrawEnable: true,
+        };
+        expect(() => {
+          area.handleCommand(command, player1);
+        }).toThrowError();
       });
     });
   });

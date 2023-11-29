@@ -25,11 +25,9 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
    * - LeaveOffice
    * - PrivacyCommand
    * - OfficeUpdate
-   *   - SketchBoardCommand
-   *    - DrawCommand
-   *    - ResetCommand
+   * - OccupancyLimit
+   * - SetDrawEnableCommand
    *
-   * If the command ended the office, records the outcome in this._history
    * If the command is successful (does not throw an error), calls this._emitAreaChanged (necessary
    *  to notify any listeners of a state update, including any change to history)
    * If the command is unsuccessful (throws an error), the error is propagated to the caller
@@ -40,9 +38,10 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
    * @param player player making the request
    * @returns response to the command, @see InteractableCommandResponse
    * @throws InvalidParametersError if the command is not supported or is invalid. Invalid commands:
-   *  - LeaveGame and GameMove: No office in progress (GAME_NOT_IN_PROGRESS_MESSAGE),
-   *        or gameID does not match the office in progress (GAME_ID_MISSMATCH_MESSAGE)
-   *  - Any command besides LeaveGame, GameMove and JoinGame: INVALID_COMMAND_MESSAGE
+   *  - Any command: No office in progress (No office to leave)
+   *  - Any command: invalid office ID (invalid office ID)
+   *  - Any command: player is not in the game (Player not in game)
+   *  - Commands controlled by the leader: player is not the leader (Only the leader can _)
    */
   public handleCommand<CommandType extends InteractableCommand>(
     command: CommandType,
@@ -114,6 +113,9 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
       return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'SetDrawEnableCommand') {
+      if (!this._office) {
+        throw new InvalidParametersError('No office to leave');
+      }
       if (player.id !== this.office?.state.leader) {
         throw new InvalidParametersError('Only the leader can enable drawing');
       }

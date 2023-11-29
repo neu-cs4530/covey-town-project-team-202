@@ -16,6 +16,9 @@ import {
 } from '../../types/CoveyTownSocket';
 import Office from './OfficeModel';
 
+/**
+ * This class is responsible for managing the state of the sketch board, and for sending commands to the server
+ */
 export default class SketchBoardModel extends Office<SketchBoardState, SketchBoardUpdateCommand> {
   public constructor() {
     const board: Color[][] = [];
@@ -37,6 +40,11 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     });
   }
 
+  /**
+   * applies updates to the board
+   * @param player the player who is making the update
+   * @param update the update command to be made
+   */
   public applyUpdate(player: Player, update: SketchBoardUpdateCommand): void {
     if (this._players.filter(p => p.id === player.id).length === 0) {
       throw new Error('Player not in board, cannot apply update');
@@ -57,6 +65,11 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     }
   }
 
+  /**
+   * updates the score of a player
+   * @param update the update command to be made
+   * @private
+   */
   private _updateScore(update: UpdateScoreCommand): void {
     const { playerID, score } = update;
 
@@ -79,6 +92,10 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     }
   }
 
+  /**
+   * resets the board to all white
+   * @private
+   */
   private _resetBoard(): void {
     for (let i = 0; i < this.state.board.length; i++) {
       for (let j = 0; j < this.state.board[0].length; j++) {
@@ -87,6 +104,11 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     }
   }
 
+  /**
+   * draws a pixel on the board
+   * @param stroke the list of DrawPixel to be updated on the board
+   * @private
+   */
   private _drawPixel(stroke: DrawPixel[]): void {
     stroke.forEach((pixelToDraw: DrawPixel) => {
       // TODO: add error messages if x and y out of bounds
@@ -94,6 +116,11 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     });
   }
 
+  /**
+   * adds a player to the board
+   * @param player the player to add
+   * @protected
+   */
   protected _join(player: Player): void {
     if (this._players.length === this.occupancyLimit) {
       throw new Error('Sketch board is full');
@@ -117,6 +144,11 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     this.state.pointsList.push(newPlayerScore);
   }
 
+  /**
+   * removes a player from the board
+   * @param player the player to remove
+   * @protected
+   */
   protected _leave(player: Player): void {
     if (this._players.filter(p => p.id === player.id).length === 0) {
       throw new Error('PLAYER DOES NOT EXIST');
@@ -135,6 +167,10 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     );
   }
 
+  /**
+   * sets whether others can draw on the board
+   * @param newDrawEnabled the new value of drawEnabled
+   */
   public set drawEnabled(newDrawEnabled: boolean) {
     this.state.drawEnabled = newDrawEnabled;
   }
