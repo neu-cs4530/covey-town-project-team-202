@@ -22,13 +22,9 @@ import LeaderSettings from './LeaderSettings';
 import SketchButtons from './SketchButtons';
 
 function SketchBoardArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
-  const colors = ['red', 'green', 'blue', 'black'];
   const officeAreaController = useOfficeAreaController<SketchBoardAreaController>(interactableID);
   const townController = useTownController();
   const [players, setPlayers] = useState<PlayerController[]>(officeAreaController.players);
-
-  const isPlayerInOffice = () =>
-    players.filter(player => player.id === townController.ourPlayer.id).length > 0;
 
   useEffect(() => {
     const updateOfficeState = () => {
@@ -42,12 +38,6 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
   return (
     <Flex flexDirection='row'>
       <Container flexDirection='column'>
-        {/* <Button
-          onClick={async () => {
-            await officeAreaController.joinOffice();
-          }}>
-          Join SketchBoard
-        </Button> */}
         <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
         <ColorSelector></ColorSelector>
         <SketchButtons officeAreaController={officeAreaController}></SketchButtons>
