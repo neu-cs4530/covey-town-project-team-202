@@ -119,6 +119,6 @@ export default abstract class OfficeAreaController<
   }
 
   public get roomLocked(): boolean {
-    return this._model.office?.state.privacy === 'PRIVATE' ? true : false;
+    return this._model.office?.state.privacy === 'PRIVATE';
   }
 }

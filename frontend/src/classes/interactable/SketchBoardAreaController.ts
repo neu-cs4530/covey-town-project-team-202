@@ -3,6 +3,7 @@ import {
   Color,
   DrawPixel,
   OfficeArea,
+  OfficeCommand,
   PlayerID,
   PlayerScore,
   SketchBoardState,
@@ -93,13 +94,9 @@ export default class SketchBoardAreaController extends OfficeAreaController<
    * @param col Column of the move
    */
   public async drawPixel(pixelsToDraw: DrawPixel[]) {
-    const instanceID = this._instanceID;
-    if (!instanceID) {
-      throw new Error('No board right now');
-    }
-    await this._townController.sendInteractableCommand(this.id, {
+    this._sendInteractableCommandHelper({
       type: 'OfficeUpdate',
-      officeID: instanceID,
+      officeID: 's',
       update: {
         type: 'DrawCommand',
         stroke: pixelsToDraw,
@@ -108,13 +105,9 @@ export default class SketchBoardAreaController extends OfficeAreaController<
   }
 
   public async resetBoard() {
-    const instanceID = this._instanceID;
-    if (!instanceID) {
-      throw new Error('No board right now');
-    }
-    await this._townController.sendInteractableCommand(this.id, {
+    this._sendInteractableCommandHelper({
       type: 'OfficeUpdate',
-      officeID: instanceID,
+      officeID: 's',
       update: {
         type: 'ResetCommand',
       },
@@ -129,13 +122,10 @@ export default class SketchBoardAreaController extends OfficeAreaController<
   }
 
   public async setDrawEnabled(newDrawEnabledValue: boolean) {
-    const instanceID = this._instanceID;
-    if (instanceID) {
-      await this._townController.sendInteractableCommand(this.id, {
-        type: 'SetDrawEnableCommand',
-        newDrawEnable: newDrawEnabledValue,
-      });
-    }
+    this._sendInteractableCommandHelper({
+      type: 'SetDrawEnableCommand',
+      newDrawEnable: newDrawEnabledValue,
+    });
   }
 
   public get leader(): PlayerID | undefined {
@@ -159,16 +149,23 @@ export default class SketchBoardAreaController extends OfficeAreaController<
   }
 
   public async newScore(playerID: PlayerID, newScore: number) {
+    this._sendInteractableCommandHelper({
+      type: 'OfficeUpdate',
+      officeID: 's',
+      update: {
+        type: 'UpdateScore',
+        playerID: playerID,
+        score: newScore,
+      },
+    });
+  }
+
+  private async _sendInteractableCommandHelper(command: OfficeCommand) {
     const instanceID = this._instanceID;
     if (instanceID) {
       await this._townController.sendInteractableCommand(this.id, {
-        type: 'OfficeUpdate',
+        ...command,
         officeID: instanceID,
-        update: {
-          type: 'UpdateScore',
-          playerID: playerID,
-          score: newScore,
-        },
       });
     }
   }
