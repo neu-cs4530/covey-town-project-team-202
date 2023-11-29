@@ -1,4 +1,3 @@
-import { DEFAULT_OCCUPANCY_LIMIT } from '../../lib/Constants';
 import InvalidParametersError, { INVALID_COMMAND_MESSAGE } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import {
@@ -116,6 +115,14 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
       }
       office.occupancyLimit = command.limit;
       this._stateUpdated(office.toModel());
+      return undefined as InteractableCommandReturnType<CommandType>;
+    }
+    if (command.type === 'SetDrawEnableCommand') {
+      if (player.id !== this.office?.state.leader) {
+        throw new InvalidParametersError('Only the leader can enable drawing');
+      }
+      this.office.drawEnabled = command.newDrawEnable;
+      this._stateUpdated(this.office.toModel());
       return undefined as InteractableCommandReturnType<CommandType>;
     }
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);

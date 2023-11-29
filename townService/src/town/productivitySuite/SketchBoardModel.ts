@@ -33,6 +33,7 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
       occupancyLimit: DEFAULT_OCCUPANCY_LIMIT,
       leader: undefined,
       pointsList: [],
+      drawEnabled: true,
     });
   }
 
@@ -119,5 +120,9 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
       const otherPlayers = this._players.filter(p => p.id !== player.id);
       this.state.leader = otherPlayers[0].id;
     }
+  }
+
+  public set drawEnabled(newDrawEnabled: boolean) {
+    this.state.drawEnabled = newDrawEnabled;
   }
 }
