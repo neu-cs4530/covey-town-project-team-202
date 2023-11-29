@@ -4,8 +4,6 @@ import {
   InteractableCommand,
   InteractableCommandReturnType,
   InteractableType,
-  OfficeInstance,
-  SketchBoardState,
 } from '../../types/CoveyTownSocket';
 import OfficeArea from './OfficeArea';
 import SketchBoardModel from './SketchBoardModel';

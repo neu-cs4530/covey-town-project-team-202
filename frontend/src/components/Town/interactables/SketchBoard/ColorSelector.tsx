@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { TwitterPicker } from 'react-color';
-import { OfficeAreaProps } from './SketchBoardCanvas';
 import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
 import { Box } from '@chakra-ui/react';
 
@@ -9,7 +8,7 @@ import { Box } from '@chakra-ui/react';
  * @param officeAreaController the office area controller being used
  * @constructor
  */
-export default function ColorSelector({ officeAreaController }: OfficeAreaProps): JSX.Element {
+export default function ColorSelector(): JSX.Element {
   const { color, setColor } = useContext(SketchBoardContext) as SketchBoardContextType;
 
   const handleColorChange = (newColor: any): void => {

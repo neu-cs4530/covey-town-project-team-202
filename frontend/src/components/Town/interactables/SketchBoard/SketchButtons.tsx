@@ -9,7 +9,7 @@ import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext
  * @constructor
  */
 function SketchButtons({ officeAreaController }: OfficeAreaProps): JSX.Element {
-  const { color, drawEnabled } = useContext(SketchBoardContext) as SketchBoardContextType;
+  const { drawEnabled } = useContext(SketchBoardContext) as SketchBoardContextType;
   return (
     <>
       {(officeAreaController.isPlayerLeader || drawEnabled) && (

@@ -16,7 +16,6 @@ import React, { useEffect, useState } from 'react';
 import { PlayerScore } from '../../../../../../shared/types/CoveyTownSocket';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import PlayerController from '../../../../classes/PlayerController';
-import PlayerName from '../../../SocialSidebar/PlayerName';
 
 /**
  * PlayerInfo component with a list of players and their scores

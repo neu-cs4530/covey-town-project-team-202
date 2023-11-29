@@ -1,4 +1,4 @@
-import { border, Button, chakra, Container, useToast } from '@chakra-ui/react';
+import { useToast } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react';
 import {
   SKETCHBOARD_PIXEL,
@@ -7,7 +7,6 @@ import {
 } from '../../../../../../townService/src/lib/Constants';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { Color } from '../../../../types/CoveyTownSocket';
-import { on } from 'events';
 import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
 import useTownController from '../../../../hooks/useTownController';
 
@@ -28,7 +27,6 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
   const { color, drawEnabled } = useContext(SketchBoardContext) as SketchBoardContextType;
   const [board, setBoard] = useState<Color[][]>(officeAreaController.board);
   const [shouldDraw, setShouldDraw] = useState<boolean>(false);
-  const toast = useToast();
 
   const handleBoardChanged = (newBoard: Color[][]) => {
     setBoard(newBoard);
@@ -41,7 +39,12 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
   }, [officeAreaController]);
 
   return (
-    <table style={{ border: '1px black solid', width: SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL }}>
+    <table
+      style={{
+        border: '1px black solid',
+        width: SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL,
+        height: SKETCHBOARD_HEIGHT * SKETCHBOARD_PIXEL,
+      }}>
       <tbody>
         {board.map((row, rowIndex) => {
           return (
