@@ -60,6 +60,9 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
   private _updateScore(update: UpdateScoreCommand): void {
     const { playerID, score } = update;
 
+    if (score < 0) {
+      throw new Error('Score cannot be negative');
+    }
     if (this._players.filter(p => p.id === playerID).length === 0) {
       throw new Error('Player is not in sketch board');
     }
@@ -107,6 +110,11 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
     if (!this.state.leader) {
       this.state.leader = player.id;
     }
+    const newPlayerScore: PlayerScore = {
+      playerID: player.id,
+      score: 0,
+    };
+    this.state.pointsList.push(newPlayerScore);
   }
 
   protected _leave(player: Player): void {
@@ -116,10 +124,15 @@ export default class SketchBoardModel extends Office<SketchBoardState, SketchBoa
 
     if (this._players.length === 1) {
       this.state.leader = undefined;
+      this.state.privacy = 'PUBLIC';
+      this._resetBoard();
     } else if (player.id === this.state.leader) {
       const otherPlayers = this._players.filter(p => p.id !== player.id);
       this.state.leader = otherPlayers[0].id;
     }
+    this.state.pointsList = this.state.pointsList.filter(
+      playerScore => playerScore.playerID !== player.id,
+    );
   }
 
   public set drawEnabled(newDrawEnabled: boolean) {

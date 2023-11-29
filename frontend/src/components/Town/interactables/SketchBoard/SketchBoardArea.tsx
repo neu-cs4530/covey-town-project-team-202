@@ -22,6 +22,11 @@ import PlayerInfo from './PlayerInfo';
 import LeaderSettings from './LeaderSettings';
 import SketchButtons from './SketchButtons';
 import { SketchBoardContext } from './sketchBoardContext';
+import {
+  SKETCHBOARD_HEIGHT,
+  SKETCHBOARD_PIXEL,
+  SKETCHBOARD_WIDTH,
+} from '../../../../../../townService/src/lib/Constants';
 
 function SketchBoardArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const officeAreaController = useOfficeAreaController<SketchBoardAreaController>(interactableID);
@@ -53,9 +58,6 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
       officeAreaController.removeListener('officeUpdated', updateOfficeState);
     };
   }, [townController, officeAreaController]);
-  function isPlayerLeader() {
-    return officeAreaController.leader === townController.ourPlayer.id;
-  }
 
   return (
     <>
@@ -75,10 +77,10 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
               <ColorSelector officeAreaController={officeAreaController}></ColorSelector>
               <SketchButtons officeAreaController={officeAreaController}></SketchButtons>
             </Container>
-            <Container flexDirection='column'>
-              <PlayerInfo></PlayerInfo>
-              {isPlayerLeader() && <LeaderSettings officeAreaController={officeAreaController} />}
-            </Container>
+            <PlayerInfo players={players} officeAreaController={officeAreaController}></PlayerInfo>
+            {officeAreaController.isPlayerLeader && (
+              <LeaderSettings officeAreaController={officeAreaController} />
+            )}
           </Flex>
         </SketchBoardContext.Provider>
       )}
@@ -115,7 +117,9 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
     return (
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent
+          maxW={SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL * 1.5}
+          maxH={SKETCHBOARD_HEIGHT * SKETCHBOARD_PIXEL * 1.5}>
           <ModalHeader>{officeArea.name}</ModalHeader>
           <ModalCloseButton />
           <SketchBoardArea interactableID={officeArea.name} />
