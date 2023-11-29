@@ -38,7 +38,6 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
   const toast = useToast();
 
   const handleBoardChanged = (newBoard: Color[][]) => {
-    console.log('In handleBoardChanged');
     setBoard(newBoard);
   };
   useEffect(() => {

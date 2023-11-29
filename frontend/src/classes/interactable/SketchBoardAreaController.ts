@@ -41,7 +41,6 @@ export default class SketchBoardAreaController extends OfficeAreaController<
       }
       return board;
     }
-    console.log('Returning this board');
     return this._model.office.state.board;
   }
 
@@ -62,12 +61,8 @@ export default class SketchBoardAreaController extends OfficeAreaController<
     const oldModel = this._model;
     super._updateFrom(newModel);
     if (newModel) {
-      console.log('in the newModel block in _updateFrom');
       if (!_.isEqual(newModel.office?.state.board, oldModel.office?.state.board)) {
-        console.log('should update the board');
-        console.log('Going to emit boardChanged');
         this.emit('canvasChanged', this.board);
-        console.log('emitted boardChanged');
       }
     }
   }
@@ -81,7 +76,6 @@ export default class SketchBoardAreaController extends OfficeAreaController<
    * @param col Column of the move
    */
   public async drawPixel(pixelsToDraw: DrawPixel[]) {
-    console.log('In drawPixel SketchBoardAreaController');
     const instanceID = this._instanceID;
     if (!instanceID) {
       throw new Error('No board right now');
@@ -94,7 +88,6 @@ export default class SketchBoardAreaController extends OfficeAreaController<
         stroke: pixelsToDraw,
       },
     });
-    console.log('the pixel has been received');
   }
 
   public async resetBoard() {

@@ -3,3 +3,5 @@ describe('SketchBoardArea', () => {
     expect(true).toBe(true);
   });
 });
+
+export {};

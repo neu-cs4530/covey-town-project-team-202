@@ -6,9 +6,6 @@ import {
   ModalHeader,
   ModalCloseButton,
   Container,
-  ListItem,
-  List,
-  Button,
   Flex,
 } from '@chakra-ui/react';
 import { useCallback } from 'react';
@@ -18,13 +15,6 @@ import OfficeArea from '../OfficeArea';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { InteractableID } from '../../../../types/CoveyTownSocket';
 import SketchBoardCanvas from './SketchBoardCanvas';
-import {
-  COLOR_PALLETE_CHOICE_HEIGHT,
-  COLOR_PALLETE_CHOICE_WIDTH,
-  SKETCHBOARD_HEIGHT,
-  SKETCHBOARD_PIXEL,
-  SKETCHBOARD_WIDTH,
-} from '../../../../../../townService/src/lib/Constants';
 import PlayerController from '../../../../classes/PlayerController';
 import ColorSelector from './ColorSelector';
 import PlayerInfo from './PlayerInfo';
@@ -59,7 +49,7 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
           Join SketchBoard
         </Button> */}
         <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
-        <ColorSelector officeAreaController={officeAreaController}></ColorSelector>
+        <ColorSelector ></ColorSelector>
         <SketchButtons officeAreaController={officeAreaController}></SketchButtons>
       </Container>
       <Container flexDirection='column'>

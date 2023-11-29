@@ -78,11 +78,7 @@ export default abstract class InteractableAreaController<
     event: E,
     ...args: Parameters<EmittedEventType[E]>
   ): boolean {
-    console.log('IN emit');
     const listeners = this._listeners.get(event) ?? [];
-    console.log('This is the listeners');
-    console.log(listeners);
-    console.log(this._listeners);
     listeners.forEach(listener => listener(...args));
     return true;
   }

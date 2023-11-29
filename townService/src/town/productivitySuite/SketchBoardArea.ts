@@ -1,4 +1,3 @@
-import { DEFAULT_OCCUPANCY_LIMIT } from '../../lib/Constants';
 import InvalidParametersError, { INVALID_COMMAND_MESSAGE } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import {
