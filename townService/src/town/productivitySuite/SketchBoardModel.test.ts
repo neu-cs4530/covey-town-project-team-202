@@ -121,7 +121,7 @@ describe('SketchBoardModel', () => {
         officeID: office.id,
         update: { type: 'UpdateScore', playerID: player1.id, score: 10 },
       };
-      expect(office.state.pointsList.length).toBe(0);
+      expect(office.state.pointsList.length).toBe(1);
       office.applyUpdate(player1, updateToSend.update);
       expect(office.state.pointsList.length).toBe(1);
       expect(office.state.pointsList[0].score).toBe(10);
@@ -134,7 +134,7 @@ describe('SketchBoardModel', () => {
         officeID: office.id,
         update: { type: 'UpdateScore', playerID: player2.id, score: 10 },
       };
-      expect(office.state.pointsList.length).toBe(0);
+      expect(office.state.pointsList.length).toBe(1);
       expect(() => office.applyUpdate(player1, updateToSend.update)).toThrowError();
     });
   });

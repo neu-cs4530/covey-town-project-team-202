@@ -4,6 +4,7 @@ import {
   GameInstanceID,
   InteractableID,
   OfficeState,
+  PrivacyType,
 } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import TownController from '../TownController';
@@ -14,6 +15,7 @@ export type OfficeEventTypes = BaseInteractableEventMap & {
   officeUpdated: () => void;
   officeEnd: () => void;
   playersChange: (newPlayers: PlayerController[]) => void;
+  roomLockChanged: (isLocked: boolean) => void;
 };
 
 /**
@@ -76,6 +78,27 @@ export default abstract class OfficeAreaController<
     }
   }
 
+  /**
+   * Sends a request to the server to set the privacy of the office
+   * @param newPrivacySetting the new privacy setting to be set to
+   * @protected
+   */
+  protected async _setPrivacy(newPrivacySetting: PrivacyType) {
+    const instanceID = this._instanceID;
+    if (instanceID) {
+      await this._townController.sendInteractableCommand(this.id, {
+        type: 'PrivacyCommand',
+        officeID: instanceID,
+        privacySetting: newPrivacySetting,
+      });
+    }
+  }
+
+  /**
+   * Sends a request to the server to start the office
+   * @param newModel the new model to compare to
+   * @protected
+   */
   protected _updateFrom(newModel: OfficeArea<State>): void {
     const newPlayers =
       newModel.office?.players.map(playerID => this._townController.getPlayer(playerID)) ?? [];
@@ -103,5 +126,12 @@ export default abstract class OfficeAreaController<
 
   toInteractableAreaModel(): OfficeArea<State> {
     return this._model;
+  }
+
+  /**
+   * Sets this model to locked or unlocked
+   */
+  public get roomLocked(): boolean {
+    return this._model.office?.state.privacy === 'PRIVATE';
   }
 }

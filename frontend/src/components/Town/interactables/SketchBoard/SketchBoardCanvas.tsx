@@ -1,5 +1,4 @@
-import { border, Button, chakra, Container, useToast } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SKETCHBOARD_PIXEL,
   SKETCHBOARD_WIDTH,
@@ -7,35 +6,26 @@ import {
 } from '../../../../../../townService/src/lib/Constants';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { Color } from '../../../../types/CoveyTownSocket';
-import { on } from 'events';
+import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
+import useTownController from '../../../../hooks/useTownController';
 
 export type OfficeAreaProps = {
   officeAreaController: SketchBoardAreaController;
 };
 
 /**
- * A component that renders the TicTacToe board
+ * A component that renders the Sketch Board
  *
- * Renders the TicTacToe board as a "StyledTicTacToeBoard", which consists of 9 "StyledTicTacToeSquare"s
- * (one for each cell in the board, starting from the top left and going left to right, top to bottom).
- * Each StyledTicTacToeSquare has an aria-label property that describes the cell's position in the board,
- * formatted as `Cell ${rowIndex},${colIndex}`.
+ * Each cell is drawable on mouse click/hold and is always visible to all players
+ * Only able to draw on any cell if the drawEnabled is true or you're the leader
  *
- * The board is re-rendered whenever the board changes, and each cell is re-rendered whenever the value
- * of that cell changes.
- *
- * If the current player is in the office, then each StyledTicTacToeSquare is clickable, and clicking
- * on it will make a move in that cell. If there is an error making the move, then a toast will be
- * displayed with the error message as the description of the toast. If it is not the current player's
- * turn, then the StyledTicTacToeSquare will be disabled.
- *
- * @param officeAreaController the controller for the TicTacToe office
+ * @param officeAreaController the controller of the specific office area
  */
 export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaProps): JSX.Element {
+  const townController = useTownController();
+  const { color, drawEnabled } = useContext(SketchBoardContext) as SketchBoardContextType;
   const [board, setBoard] = useState<Color[][]>(officeAreaController.board);
-  const [currentColor, setCurrentColor] = useState<Color>(`#123456`);
   const [shouldDraw, setShouldDraw] = useState<boolean>(false);
-  const toast = useToast();
 
   const handleBoardChanged = (newBoard: Color[][]) => {
     setBoard(newBoard);
@@ -47,14 +37,13 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
     };
   }, [officeAreaController]);
 
-  const draw = async () => {
-    if (shouldDraw) {
-      await officeAreaController.drawPixel([{ x: 0, y: 0, color: currentColor }]);
-    }
-  };
-
   return (
-    <table style={{ border: '1px black solid' }}>
+    <table
+      style={{
+        border: '1px black solid',
+        width: SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL,
+        height: SKETCHBOARD_HEIGHT * SKETCHBOARD_PIXEL,
+      }}>
       <tbody>
         {board.map((row, rowIndex) => {
           return (
@@ -65,15 +54,18 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
                     key={rowIndex * 10 + colIndex}
                     style={{
                       height: SKETCHBOARD_PIXEL,
-                      width: '20px',
+                      width: SKETCHBOARD_PIXEL,
                       backgroundColor: board[rowIndex][colIndex],
                     }}
                     onMouseDown={() => setShouldDraw(true)}
                     onMouseUp={() => setShouldDraw(false)}
                     onMouseEnter={async () => {
-                      if (shouldDraw) {
+                      if (
+                        shouldDraw &&
+                        (drawEnabled || townController.ourPlayer.id === officeAreaController.leader)
+                      ) {
                         await officeAreaController.drawPixel([
-                          { x: rowIndex, y: colIndex, color: currentColor },
+                          { x: rowIndex, y: colIndex, color: color },
                         ]);
                       }
                     }}

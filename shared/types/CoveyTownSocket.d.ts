@@ -92,6 +92,7 @@ export interface SketchBoardState extends OfficeState {
   board: Color[][];
   backgroundColor: Color;
   pointsList: PlayerScore[];
+  drawEnabled: boolean;
 }
 
 export interface PlayerScore { 
@@ -220,7 +221,7 @@ interface InteractableCommandBase {
 
 export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand | OfficeCommand;
 
-export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand> | OccupancyLimitCommand;
+export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | SetDrawEnableCommand | OfficeUpdateCommand<SketchBoardUpdateCommand> | OccupancyLimitCommand;
 
 export type SketchBoardUpdateCommand = DrawCommand | ResetCommand | UpdateScoreCommand;
 
@@ -256,6 +257,10 @@ export interface PrivacyCommand {
   type: 'PrivacyCommand';
   officeID: OfficeInstanceID;
   privacySetting: PrivacyType;
+}
+export interface SetDrawEnableCommand {
+  type: 'SetDrawEnableCommand';
+  newDrawEnable: boolean;
 }
 export interface OfficeUpdateCommand<OfficeUpdateType> {
   type: 'OfficeUpdate';
