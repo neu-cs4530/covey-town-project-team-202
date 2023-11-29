@@ -16,22 +16,12 @@ export type OfficeAreaProps = {
 };
 
 /**
- * A component that renders the TicTacToe board
+ * A component that renders the Sketch Board
  *
- * Renders the TicTacToe board as a "StyledTicTacToeBoard", which consists of 9 "StyledTicTacToeSquare"s
- * (one for each cell in the board, starting from the top left and going left to right, top to bottom).
- * Each StyledTicTacToeSquare has an aria-label property that describes the cell's position in the board,
- * formatted as `Cell ${rowIndex},${colIndex}`.
+ * Each cell is drawable on mouse click/hold and is always visible to all players
+ * Only able to draw on any cell if the drawEnabled is true or you're the leader
  *
- * The board is re-rendered whenever the board changes, and each cell is re-rendered whenever the value
- * of that cell changes.
- *
- * If the current player is in the office, then each StyledTicTacToeSquare is clickable, and clicking
- * on it will make a move in that cell. If there is an error making the move, then a toast will be
- * displayed with the error message as the description of the toast. If it is not the current player's
- * turn, then the StyledTicTacToeSquare will be disabled.
- *
- * @param officeAreaController the controller for the TicTacToe office
+ * @param officeAreaController the controller of the specific office area
  */
 export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaProps): JSX.Element {
   const townController = useTownController();

@@ -3,6 +3,12 @@ import React, { useContext } from 'react';
 import { OfficeAreaProps } from './SketchBoardCanvas';
 import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
 
+/**
+ * LeaderSettings component that has the available settings for a sketch board
+ * that only a leader a can see
+ * @param officeAreaController the controller of the specific office area
+ * @constructor
+ */
 function LeaderSettings({ officeAreaController }: OfficeAreaProps): JSX.Element {
   const { drawEnabled, roomLocked } = useContext(SketchBoardContext) as SketchBoardContextType;
   return (

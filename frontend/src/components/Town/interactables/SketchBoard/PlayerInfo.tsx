@@ -15,6 +15,11 @@ import { PlayerScore } from '../../../../../../shared/types/CoveyTownSocket';
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import PlayerController from '../../../../classes/PlayerController';
 
+/**
+ * PlayerInfo component with a list of players and their scores
+ * @param officeAreaController the controller of the specific office area
+ * @constructor
+ */
 export default function PlayerInfo({
   officeAreaController,
 }: {

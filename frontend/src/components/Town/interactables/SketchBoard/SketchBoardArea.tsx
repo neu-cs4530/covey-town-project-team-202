@@ -28,6 +28,11 @@ import {
   SKETCHBOARD_WIDTH,
 } from '../../../../../../townService/src/lib/Constants';
 
+/**
+ * SketchBoardArea component that has everything necessary for a sketchboard area
+ * @param interactableID the id of the sketchboard interactable
+ * @constructor
+ */
 function SketchBoardArea({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const officeAreaController = useOfficeAreaController<SketchBoardAreaController>(interactableID);
   const townController = useTownController();
