@@ -21,12 +21,18 @@ import {
   InteractableCommandBase,
   InteractableCommandResponse,
   InteractableID,
+  OfficeState,
   PlayerID,
   PlayerLocation,
   TownSettingsUpdate,
   ViewingArea as ViewingAreaModel,
 } from '../types/CoveyTownSocket';
-import { isConversationArea, isTicTacToeArea, isViewingArea } from '../types/TypeUtils';
+import {
+  isConversationArea,
+  isSketchBoardArea,
+  isTicTacToeArea,
+  isViewingArea,
+} from '../types/TypeUtils';
 import ConversationAreaController from './interactable/ConversationAreaController';
 import GameAreaController, { GameEventTypes } from './interactable/GameAreaController';
 import InteractableAreaController, {
@@ -35,6 +41,9 @@ import InteractableAreaController, {
 import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
+import OfficeArea from '../components/Town/interactables/OfficeArea';
+import OfficeAreaController, { OfficeEventTypes } from './interactable/OfficeAreaController';
+import SketchBoardAreaController from './interactable/SketchBoardAreaController';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY_MS = 300;
 const SOCKET_COMMAND_TIMEOUT_MS = 5000;
@@ -330,6 +339,13 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     return ret as GameAreaController<GameState, GameEventTypes>[];
   }
 
+  public get officeAreas() {
+    const ret = this._interactableControllers.filter(
+      eachInteractable => eachInteractable instanceof OfficeAreaController,
+    );
+    return ret as OfficeAreaController<OfficeState, OfficeEventTypes>[];
+  }
+
   /**
    * Begin interacting with an interactable object. Emits an event to all listeners.
    * @param interactedObj
@@ -591,6 +607,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
         );
 
         this._interactableControllers = [];
+
         initialData.interactables.forEach(eachInteractable => {
           if (isConversationArea(eachInteractable)) {
             this._interactableControllers.push(
@@ -604,6 +621,10 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
           } else if (isTicTacToeArea(eachInteractable)) {
             this._interactableControllers.push(
               new TicTacToeAreaController(eachInteractable.id, eachInteractable, this),
+            );
+          } else if (isSketchBoardArea(eachInteractable)) {
+            this._interactableControllers.push(
+              new SketchBoardAreaController(eachInteractable.id, eachInteractable, this),
             );
           }
         });
@@ -663,6 +684,27 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     );
     if (existingController instanceof GameAreaController) {
       return existingController as GameAreaController<GameType, EventsType>;
+    } else {
+      throw new Error('Game area controller not created');
+    }
+  }
+
+  /**
+   * Retrives the game area controller corresponding to a game area by ID, or
+   * throws an error if the game area controller does not exist
+   *
+   * @param gameArea
+   * @returns
+   */
+  public getOfficeAreaController<
+    OfficeType extends OfficeState,
+    EventsType extends OfficeEventTypes,
+  >(officeArea: OfficeArea): OfficeAreaController<OfficeType, EventsType> {
+    const existingController = this._interactableControllers.find(
+      eachExistingArea => eachExistingArea.id === officeArea.name,
+    );
+    if (existingController instanceof OfficeAreaController) {
+      return existingController as OfficeAreaController<OfficeType, EventsType>;
     } else {
       throw new Error('Game area controller not created');
     }
@@ -748,6 +790,17 @@ export function useTownSettings() {
 export function useInteractableAreaController<T>(interactableAreaID: string): T {
   const townController = useTownController();
   const interactableAreaController = townController.gameAreas.find(
+    eachArea => eachArea.id == interactableAreaID,
+  );
+  if (!interactableAreaController) {
+    throw new Error(`Requested interactable area ${interactableAreaID} does not exist`);
+  }
+  return interactableAreaController as unknown as T;
+}
+
+export function useOfficeAreaController<T>(interactableAreaID: string): T {
+  const townController = useTownController();
+  const interactableAreaController = townController.officeAreas.find(
     eachArea => eachArea.id == interactableAreaID,
   );
   if (!interactableAreaController) {

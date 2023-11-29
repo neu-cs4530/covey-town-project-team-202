@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'SketchBoardArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -74,12 +74,36 @@ export interface ViewingArea extends Interactable {
 }
 
 export type GameStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'OVER';
+export type PrivacyType = 'PUBLIC' | 'PRIVATE';
 /**
  * Base type for the state of a game
  */
 export interface GameState {
   status: GameStatus;
 } 
+
+export interface OfficeState {
+  privacy: PrivacyType;
+  occupancyLimit: number;
+  leader: PlayerID | undefined;
+}
+
+export interface SketchBoardState extends OfficeState {
+  board: Color[][];
+  backgroundColor: Color;
+  pointsList: PlayerScore[];
+}
+
+export interface PlayerScore { 
+  playerID: PlayerID;
+  score: number;
+}
+
+// Make a set score in Model. Take in the player we are updating
+// Make an UpdateScore command
+// Update from in Model -> Add new case for this command
+
+export type Color = `#${string}`;
 
 /**
  * Type for the state of a game that can be won
@@ -95,6 +119,12 @@ export interface GameMove<MoveType> {
   playerID: PlayerID;
   gameID: GameInstanceID;
   move: MoveType;
+}
+
+export interface OfficeUpdate<UpdateType> {
+  playerID: PlayerID;
+  officeID: OfficeInstanceID;
+  update: UpdateType;
 }
 
 export type TicTacToeGridPosition = 0 | 1 | 2;
@@ -121,6 +151,7 @@ export interface TicTacToeGameState extends WinnableGameState {
 
 export type InteractableID = string;
 export type GameInstanceID = string;
+export type OfficeInstanceID = string;
 
 /**
  * Type for the result of a game
@@ -143,6 +174,19 @@ export interface GameInstance<T extends GameState> {
   result?: GameResult;
 }
 
+export interface OfficeInstance<T extends OfficeState> {
+  state: T;
+  id: OfficeInstanceID;
+  players: PlayerID[];
+}
+
+/**
+ * Base type for an area that can host a game
+ * @see OfficeInstance
+ */
+export interface OfficeArea<T extends OfficeState> extends Interactable {
+  office: OfficeInstance<T> | undefined;
+}
 /**
  * Base type for an area that can host a game
  * @see GameInstance
@@ -174,7 +218,12 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand | OfficeCommand;
+
+export type OfficeCommand = JoinOfficeCommand | LeaveOfficeCommand | PrivacyCommand | OfficeUpdateCommand<SketchBoardUpdateCommand> | OccupancyLimitCommand;
+
+export type SketchBoardUpdateCommand = DrawCommand | ResetCommand | UpdateScoreCommand;
+
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
@@ -186,16 +235,61 @@ export interface LeaveGameCommand {
   type: 'LeaveGame';
   gameID: GameInstanceID;
 }
+export interface OccupancyLimitCommand {
+  type: 'OccupancyLimit';
+  officeID: OfficeInstanceID;
+  limit: number;
+}
 export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;
   move: MoveType;
+}
+export interface JoinOfficeCommand {
+  type: 'JoinOffice';
+}
+export interface LeaveOfficeCommand {
+  type: 'LeaveOffice';
+  officeID: OfficeInstanceID;
+}
+export interface PrivacyCommand {
+  type: 'PrivacyCommand';
+  officeID: OfficeInstanceID;
+  privacySetting: PrivacyType;
+}
+export interface OfficeUpdateCommand<OfficeUpdateType> {
+  type: 'OfficeUpdate';
+  officeID: OfficeInstanceID;
+  update: OfficeUpdateType;
+}
+export interface DrawCommand {
+  type: 'DrawCommand';
+  stroke: DrawPixel[];
+}
+export interface DrawPixel {
+  x: number;
+  y: number;
+  color: Color;
+}
+export interface ResetCommand {
+  type: 'ResetCommand';
+}
+export interface UpdateScoreCommand {
+  type: 'UpdateScore';
+  playerID: PlayerID;
+  score: number;
 }
 export type InteractableCommandReturnType<CommandType extends InteractableCommand> = 
   CommandType extends JoinGameCommand ? { gameID: string}:
   CommandType extends ViewingAreaUpdateCommand ? undefined :
   CommandType extends GameMoveCommand<TicTacToeMove> ? undefined :
   CommandType extends LeaveGameCommand ? undefined :
+  CommandType extends JoinOfficeCommand ? { officeID: string}:
+  CommandType extends GameMoveCommand<TicTacToeMove> ? undefined :
+  CommandType extends LeaveOfficeCommand ? undefined :
+  CommandType extends OfficeUpdateCommand<SketchBoardUpdateCommand> ? undefined :
+  CommandType extends PrivacyCommand ? undefined :
+  CommandType extends OccupancyLimitCommand ? undefined :
   never;
 
 export type InteractableCommandResponse<MessageType> = {

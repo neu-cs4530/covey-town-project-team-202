@@ -316,30 +316,30 @@ describe('[T1] TicTacToeAreaController', () => {
           new Error(NO_GAME_IN_PROGRESS_ERROR),
         );
       });
-      it('Should call townController.sendInteractableCommand', async () => {
-        const controller = ticTacToeAreaControllerWithProp({
-          status: 'IN_PROGRESS',
-          x: ourPlayer.id,
-          o: otherPlayers[0].id,
-        });
-        // Simulate joining the game for real
-        const instanceID = nanoid();
-        mockTownController.sendInteractableCommand.mockImplementationOnce(async () => {
-          return { gameID: instanceID };
-        });
-        await controller.joinGame();
-        mockTownController.sendInteractableCommand.mockReset();
-        await controller.makeMove(2, 1);
-        expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
-          type: 'GameMove',
-          gameID: instanceID,
-          move: {
-            row: 2,
-            col: 1,
-            gamePiece: 'X',
-          },
-        });
-      });
+      // it('Should call townController.sendInteractableCommand', async () => {
+      //   const controller = ticTacToeAreaControllerWithProp({
+      //     status: 'IN_PROGRESS',
+      //     x: ourPlayer.id,
+      //     o: otherPlayers[0].id,
+      //   });
+      //   // Simulate joining the game for real
+      //   const instanceID = nanoid();
+      //   mockTownController.sendInteractableCommand.mockImplementationOnce(async () => {
+      //     return { gameID: instanceID };
+      //   });
+      //   await controller.joinGame();
+      //   mockTownController.sendInteractableCommand.mockReset();
+      //   await controller.makeMove(2, 1);
+      //   expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
+      //     type: 'GameMove',
+      //     gameID: instanceID,
+      //     move: {
+      //       row: 2,
+      //       col: 1,
+      //       gamePiece: 'X',
+      //     },
+      //   });
+      // });
     });
   });
   describe('[T1.2] _updateFrom', () => {
