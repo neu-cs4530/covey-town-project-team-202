@@ -7,12 +7,6 @@ function SketchButtons({ officeAreaController }: OfficeAreaProps): JSX.Element {
     <>
       <Button
         onClick={async () => {
-          await officeAreaController.joinOffice();
-        }}>
-        Join SketchBoard
-      </Button>
-      <Button
-        onClick={async () => {
           await officeAreaController.leaveOffice();
         }}>
         Leave SketchBoard

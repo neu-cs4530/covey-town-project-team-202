@@ -1,12 +1,18 @@
 import _ from 'lodash';
-import { Color, DrawPixel, OfficeArea, SketchBoardState } from '../../types/CoveyTownSocket';
+import {
+  Color,
+  DrawPixel,
+  OfficeArea,
+  PlayerID,
+  SketchBoardState,
+} from '../../types/CoveyTownSocket';
 import OfficeAreaController, { OfficeEventTypes } from './OfficeAreaController';
 import { SKETCHBOARD_HEIGHT, SKETCHBOARD_WIDTH } from '../../../../townService/src/lib/Constants';
 
 export type SketchBoardEvents = OfficeEventTypes & {
   canvasChanged: (board: Color[][]) => void;
-  privacyChanged: (isOurTurn: boolean) => void;
   occupancyLimitChanged: (newLimit: number) => void;
+  drawEnableChanged: (newDrawEnable: boolean) => void;
 };
 
 /**
@@ -60,9 +66,17 @@ export default class SketchBoardAreaController extends OfficeAreaController<
     // TODO
     const oldModel = this._model;
     super._updateFrom(newModel);
-    if (newModel) {
+    if (newModel.office) {
       if (!_.isEqual(newModel.office?.state.board, oldModel.office?.state.board)) {
         this.emit('canvasChanged', this.board);
+      }
+      if (newModel.office?.state.drawEnabled !== oldModel.office?.state.drawEnabled) {
+        this.emit('drawEnableChanged', newModel.office.state.drawEnabled);
+      }
+      if (oldModel.office?.state.privacy !== newModel.office.state.privacy) {
+        //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        this.emit('roomLockChanged', this.roomLocked);
       }
     }
   }
@@ -102,5 +116,34 @@ export default class SketchBoardAreaController extends OfficeAreaController<
         type: 'ResetCommand',
       },
     });
+  }
+
+  public get drawEnabled(): boolean {
+    if (!this._model.office) {
+      return true;
+    }
+    return this._model.office.state.drawEnabled;
+  }
+
+  public async setDrawEnabled(newDrawEnabledValue: boolean) {
+    const instanceID = this._instanceID;
+    if (instanceID) {
+      await this._townController.sendInteractableCommand(this.id, {
+        type: 'SetDrawEnableCommand',
+        newDrawEnable: newDrawEnabledValue,
+      });
+    }
+  }
+
+  public get leader(): PlayerID | undefined {
+    return this._model.office?.state.leader;
+  }
+
+  public lockRoom(shouldLock: boolean) {
+    if (shouldLock) {
+      this._setPrivacy('PRIVATE');
+    } else {
+      this._setPrivacy('PUBLIC');
+    }
   }
 }

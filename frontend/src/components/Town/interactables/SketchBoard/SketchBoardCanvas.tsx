@@ -1,5 +1,5 @@
 import { border, Button, chakra, Container, useToast } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   SKETCHBOARD_PIXEL,
   SKETCHBOARD_WIDTH,
@@ -8,6 +8,8 @@ import {
 import SketchBoardAreaController from '../../../../classes/interactable/SketchBoardAreaController';
 import { Color } from '../../../../types/CoveyTownSocket';
 import { on } from 'events';
+import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
+import useTownController from '../../../../hooks/useTownController';
 
 export type OfficeAreaProps = {
   officeAreaController: SketchBoardAreaController;
@@ -32,8 +34,9 @@ export type OfficeAreaProps = {
  * @param officeAreaController the controller for the TicTacToe office
  */
 export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaProps): JSX.Element {
+  const townController = useTownController();
+  const { color, drawEnabled } = useContext(SketchBoardContext) as SketchBoardContextType;
   const [board, setBoard] = useState<Color[][]>(officeAreaController.board);
-  const [currentColor, setCurrentColor] = useState<Color>(`#123456`);
   const [shouldDraw, setShouldDraw] = useState<boolean>(false);
   const toast = useToast();
 
@@ -46,12 +49,6 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
       officeAreaController.removeListener('canvasChanged', handleBoardChanged);
     };
   }, [officeAreaController]);
-
-  const draw = async () => {
-    if (shouldDraw) {
-      await officeAreaController.drawPixel([{ x: 0, y: 0, color: currentColor }]);
-    }
-  };
 
   return (
     <table style={{ border: '1px black solid' }}>
@@ -71,9 +68,12 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
                     onMouseDown={() => setShouldDraw(true)}
                     onMouseUp={() => setShouldDraw(false)}
                     onMouseEnter={async () => {
-                      if (shouldDraw) {
+                      if (
+                        shouldDraw &&
+                        (drawEnabled || townController.ourPlayer.id === officeAreaController.leader)
+                      ) {
                         await officeAreaController.drawPixel([
-                          { x: rowIndex, y: colIndex, color: currentColor },
+                          { x: rowIndex, y: colIndex, color: color },
                         ]);
                       }
                     }}

@@ -117,6 +117,14 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
       this._stateUpdated(office.toModel());
       return undefined as InteractableCommandReturnType<CommandType>;
     }
+    if (command.type === 'SetDrawEnableCommand') {
+      if (player.id !== this.office?.state.leader) {
+        throw new InvalidParametersError('Only the leader can enable drawing');
+      }
+      this.office.drawEnabled = command.newDrawEnable;
+      this._stateUpdated(this.office.toModel());
+      return undefined as InteractableCommandReturnType<CommandType>;
+    }
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
   }
 }
