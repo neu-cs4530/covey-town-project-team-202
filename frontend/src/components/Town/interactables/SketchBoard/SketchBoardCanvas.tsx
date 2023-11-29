@@ -51,7 +51,7 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
   }, [officeAreaController]);
 
   return (
-    <table style={{ border: '1px black solid' }}>
+    <table style={{ border: '1px black solid', width: SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL }}>
       <tbody>
         {board.map((row, rowIndex) => {
           return (
@@ -62,7 +62,7 @@ export default function SketchBoardCanvas({ officeAreaController }: OfficeAreaPr
                     key={rowIndex * 10 + colIndex}
                     style={{
                       height: SKETCHBOARD_PIXEL,
-                      width: '20px',
+                      width: SKETCHBOARD_PIXEL,
                       backgroundColor: board[rowIndex][colIndex],
                     }}
                     onMouseDown={() => setShouldDraw(true)}

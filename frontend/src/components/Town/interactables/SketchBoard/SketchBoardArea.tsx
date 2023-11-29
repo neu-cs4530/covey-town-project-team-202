@@ -127,7 +127,7 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
         <ModalContent
           ml='40px'
           mr='40px'
-          maxW={SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL}
+          maxW={SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL * 2}
           maxH={SKETCHBOARD_HEIGHT * SKETCHBOARD_PIXEL * 2}>
           <ModalHeader>{officeArea.name}</ModalHeader>
           <SketchBoardArea interactableID={officeArea.name} />
