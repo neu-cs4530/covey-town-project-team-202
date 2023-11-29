@@ -1,4 +1,4 @@
-import { Switch } from '@chakra-ui/react';
+import { Switch, Text } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { OfficeAreaProps } from './SketchBoardCanvas';
 import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
@@ -7,18 +7,20 @@ function LeaderSettings({ officeAreaController }: OfficeAreaProps): JSX.Element 
   const { drawEnabled, roomLocked } = useContext(SketchBoardContext) as SketchBoardContextType;
   return (
     <>
+      <Text fontSize='2xl'>Board Settings</Text>
       <Switch
+        isChecked={drawEnabled}
         onChange={async () => {
           await officeAreaController.setDrawEnabled(!drawEnabled);
         }}>
-        {drawEnabled ? 'Drawing enabled' : 'Enable drawing'}
+        Allow Drawing
       </Switch>
       <br></br>
       <Switch
         onChange={async () => {
           await officeAreaController.lockRoom(!roomLocked);
         }}>
-        {roomLocked ? 'Room is locked' : 'Room is unlocked'}
+        Allow More Participants
       </Switch>
     </>
   );

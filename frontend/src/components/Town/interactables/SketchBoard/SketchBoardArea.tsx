@@ -74,13 +74,20 @@ function SketchBoardArea({ interactableID }: { interactableID: InteractableID })
           <Flex flexDirection='row'>
             <Container flexDirection='column'>
               <SketchBoardCanvas officeAreaController={officeAreaController}></SketchBoardCanvas>
-              <ColorSelector officeAreaController={officeAreaController}></ColorSelector>
-              <SketchButtons officeAreaController={officeAreaController}></SketchButtons>
+              <Flex flexDirection='row'>
+                <ColorSelector officeAreaController={officeAreaController}></ColorSelector>
+                <SketchButtons officeAreaController={officeAreaController}></SketchButtons>
+              </Flex>
             </Container>
-            <PlayerInfo players={players} officeAreaController={officeAreaController}></PlayerInfo>
-            {officeAreaController.isPlayerLeader && (
-              <LeaderSettings officeAreaController={officeAreaController} />
-            )}
+
+            <Container flexDirection='column'>
+              <PlayerInfo
+                players={players}
+                officeAreaController={officeAreaController}></PlayerInfo>
+              {officeAreaController.isPlayerLeader && (
+                <LeaderSettings officeAreaController={officeAreaController} />
+              )}
+            </Container>
           </Flex>
         </SketchBoardContext.Provider>
       )}
@@ -118,10 +125,11 @@ export default function SketchBoardAreaWrapper(): JSX.Element {
       <Modal isOpen={true} onClose={closeModal} closeOnOverlayClick={false}>
         <ModalOverlay />
         <ModalContent
-          maxW={SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL * 1.5}
-          maxH={SKETCHBOARD_HEIGHT * SKETCHBOARD_PIXEL * 1.5}>
+          ml='40px'
+          mr='40px'
+          maxW={SKETCHBOARD_WIDTH * SKETCHBOARD_PIXEL}
+          maxH={SKETCHBOARD_HEIGHT * SKETCHBOARD_PIXEL * 2}>
           <ModalHeader>{officeArea.name}</ModalHeader>
-          <ModalCloseButton />
           <SketchBoardArea interactableID={officeArea.name} />
         </ModalContent>
       </Modal>
