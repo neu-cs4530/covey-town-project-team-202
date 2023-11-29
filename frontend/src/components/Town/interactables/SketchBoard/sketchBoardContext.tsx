@@ -1,6 +1,9 @@
 import { createContext } from 'react';
 import { Color } from '../../../../types/CoveyTownSocket';
 
+/**
+ * Context for the SketchBoard component
+ */
 export type SketchBoardContextType = {
   color: Color;
   setColor: (color: Color) => void;

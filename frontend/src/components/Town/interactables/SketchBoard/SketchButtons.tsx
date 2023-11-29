@@ -3,6 +3,11 @@ import React, { useContext } from 'react';
 import { OfficeAreaProps } from './SketchBoardCanvas';
 import { SketchBoardContext, SketchBoardContextType } from './sketchBoardContext';
 
+/**
+ * SketchButtons component that has buttons to handle leaving and resetting the sketch board
+ * @param officeAreaController the controller of the specific office area
+ * @constructor
+ */
 function SketchButtons({ officeAreaController }: OfficeAreaProps): JSX.Element {
   const { color, drawEnabled } = useContext(SketchBoardContext) as SketchBoardContextType;
   return (

@@ -18,10 +18,6 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
     return 'SketchBoardArea';
   }
 
-  private _stateUpdated(updatedState: OfficeInstance<SketchBoardState>) {
-    this._emitAreaChanged();
-  }
-
   /**
    * Handle a command from a user in this office area.
    * Supported commands:
@@ -29,11 +25,9 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
    * - LeaveOffice
    * - PrivacyCommand
    * - OfficeUpdate
-   *   - SketchBoardCommand
-   *    - DrawCommand
-   *    - ResetCommand
+   * - OccupancyLimit
+   * - SetDrawEnableCommand
    *
-   * If the command ended the office, records the outcome in this._history
    * If the command is successful (does not throw an error), calls this._emitAreaChanged (necessary
    *  to notify any listeners of a state update, including any change to history)
    * If the command is unsuccessful (throws an error), the error is propagated to the caller
@@ -44,9 +38,10 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
    * @param player player making the request
    * @returns response to the command, @see InteractableCommandResponse
    * @throws InvalidParametersError if the command is not supported or is invalid. Invalid commands:
-   *  - LeaveGame and GameMove: No office in progress (GAME_NOT_IN_PROGRESS_MESSAGE),
-   *        or gameID does not match the office in progress (GAME_ID_MISSMATCH_MESSAGE)
-   *  - Any command besides LeaveGame, GameMove and JoinGame: INVALID_COMMAND_MESSAGE
+   *  - Any command: No office in progress (No office to leave)
+   *  - Any command: invalid office ID (invalid office ID)
+   *  - Any command: player is not in the game (Player not in game)
+   *  - Commands controlled by the leader: player is not the leader (Only the leader can _)
    */
   public handleCommand<CommandType extends InteractableCommand>(
     command: CommandType,
@@ -60,7 +55,7 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
         this._office = office;
       }
       office.join(player);
-      this._stateUpdated(office.toModel());
+      this._emitAreaChanged();
       return { officeID: office.id } as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'LeaveOffice') {
@@ -72,7 +67,7 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
         throw new InvalidParametersError('invalid office ID');
       }
       office.leave(player);
-      this._stateUpdated(office.toModel());
+      this._emitAreaChanged();
       return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'PrivacyCommand') {
@@ -87,7 +82,7 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
         throw new InvalidParametersError('only the leader can set privacy');
       }
       office.privacy = command.privacySetting;
-      this._stateUpdated(office.toModel());
+      this._emitAreaChanged();
       return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'OfficeUpdate') {
@@ -99,7 +94,7 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
         throw new InvalidParametersError('invalid office ID');
       }
       this.office?.applyUpdate(player, command.update);
-      this._stateUpdated(office.toModel());
+      this._emitAreaChanged();
       return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'OccupancyLimit') {
@@ -114,15 +109,18 @@ export default class SketchBoardArea extends OfficeArea<SketchBoardModel> {
         throw new InvalidParametersError('only the leader can set privacy');
       }
       office.occupancyLimit = command.limit;
-      this._stateUpdated(office.toModel());
+      this._emitAreaChanged();
       return undefined as InteractableCommandReturnType<CommandType>;
     }
     if (command.type === 'SetDrawEnableCommand') {
+      if (!this._office) {
+        throw new InvalidParametersError('No office to leave');
+      }
       if (player.id !== this.office?.state.leader) {
         throw new InvalidParametersError('Only the leader can enable drawing');
       }
       this.office.drawEnabled = command.newDrawEnable;
-      this._stateUpdated(this.office.toModel());
+      this._emitAreaChanged();
       return undefined as InteractableCommandReturnType<CommandType>;
     }
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
